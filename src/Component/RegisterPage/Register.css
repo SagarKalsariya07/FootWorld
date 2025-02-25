@@ -1,0 +1,34 @@
+.main{
+    height: auto;
+    background-image: url("../Images/regback.avif");
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: rgb(0, 0, 0);
+}
+
+.regform{
+    height: auto;
+    margin: auto;
+    width: 50%;
+    text-align: start;
+    padding: 20px;
+    font-size: 20px;
+    background-color: white;
+}
+.regform input,.regform textarea{
+    background-color: rgba(234, 239, 238, 0.267);
+}
+
+.gap{
+    padding-top:15px ;
+}
+
+.submitbutton{
+    text-align:center;
+}
+
+.submitbutton button{
+    border-radius: 20px;
+    width:220px;
+    background-color: rgba(66, 187, 239, 0.936);
+}

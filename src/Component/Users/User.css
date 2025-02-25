@@ -1,0 +1,149 @@
+.alluser {
+  width: 100%;
+  height: auto;
+  background-image: url("../Images/image0_0.jpg");
+}
+
+.usertable {
+  width: 80%;
+  height: 100vh;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.usertable table,
+td,
+th {
+  border: 1px solid black;
+}
+.usertable table {
+  align-items: center;
+  background-color: rgb(240, 248, 255);
+  box-shadow: 3px 5px 15px 2px;
+  transition: transform 0.5s ease;
+}
+.usertable table:hover {
+  transform: scale(1.005);
+}
+.usertable table thead {
+  background-color: rgb(36, 235, 169);
+  text-align: start;
+}
+.usertable table thead tr th {
+  text-align: start;
+  padding: 10px;
+  font-size: 20px;
+}
+.usertable table thead tr td {
+  text-align: start;
+  padding: 10px;
+}
+.addnewbutton{
+  transition: all 0.3s ease;
+}
+.addnewbutton:hover,
+.deletebutton:hover {
+  background-color: rgb(247, 10, 10);
+}
+
+.usertable table tbody tr td {
+  text-align: center;
+  padding: 25px;
+}
+
+.usertable table tbody tr:nth-child(even) {
+  background-color: rgba(78, 79, 81, 0.169);
+}
+
+/* //css for userform */
+
+.regform5 {
+  width: 100%;
+  max-width: 800px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  font-family: "Poppins", sans-serif;
+}
+
+.card-header {
+  padding: 15px;
+  border-radius: 8px 8px 0 0;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+  color: #333;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  outline: none;
+  transition: 0.3s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+textarea {
+  resize: none;
+}
+
+.btn {
+  padding: 10px 15px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.gap {
+  margin-bottom: 15px;
+}
+
+.dropdown select {
+  cursor: pointer;
+}
+

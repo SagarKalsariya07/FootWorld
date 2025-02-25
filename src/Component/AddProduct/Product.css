@@ -1,0 +1,175 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.fullpage{
+    width: 100%;
+    height: auto;
+    background-image: url("../Images/image1.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.productdata {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.producttable {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.producttable thead tr {
+    background-color: #007bff;
+    color: white;
+    text-align: left;
+    font-weight: bold;
+}
+
+.producttable th, .producttable td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.producttable tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+
+.allproducttext {
+    text-align: left;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+
+.addbutton, .controlbutton,.controlbutton1 {
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.addbutton {
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+}
+
+.addbutton:hover {
+    background-color: #218838;
+}
+
+.controlbutton {
+    margin-right: 5px;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.controlbutton:hover {
+    background-color: #0056b3;
+}
+.controlbutton1 {
+    margin-right: 5px;
+    background-color: #ff0022;
+    color: white;
+    font-weight: bold;
+}
+
+.controlbutton1:hover {
+    background-color: #0056b3;
+}
+
+.form {
+    width: 100%;
+    margin: auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.card-header {
+    padding: 15px;
+    border-radius: 8px 8px 0 0;
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+
+.form-group, .form-outline {
+    margin-bottom: 15px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+textarea.form-control {
+    resize: vertical;
+}
+
+
+.dropdown select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+
+.subbutton, .cancelbutton button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.subbutton {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.subbutton:hover {
+    background-color: #0056b3;
+}
+.cancelbutton{
+    width: 15%;    
+    font-weight: bold;
+}
+.cancelbutton button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.cancelbutton button:hover {
+    background-color: #c82333;
+}
+
+.frm{
+    width: 100%;
+}

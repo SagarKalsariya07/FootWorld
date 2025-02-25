@@ -1,0 +1,42 @@
+.main1{
+    background-image: url("../Images/loginbackground.avif");
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: rgb(224, 232, 239);
+}
+
+.regform1{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+}
+.loginform label{
+    color: aliceblue;
+}
+.loginform div input{
+    width: 330px;
+    height: 40px;
+    background-color: rgba(206, 203, 198, 0.731);
+} 
+.submitbutton1{
+    text-align: center;
+}
+.submitbutton1 button{
+    background-color: rgb(198, 90, 57);
+    border: none;
+    border-radius: 20px;
+    width: 70%;
+    text-align: center;
+}
+.submitbutton1 span{
+    margin-top: 25px;
+}
+
+
+.googlelogin{
+    margin-top: 10px;
+    text-align: center;
+}

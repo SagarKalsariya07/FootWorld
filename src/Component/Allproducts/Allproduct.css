@@ -1,0 +1,18 @@
+
+.filter{
+    width: 80%;
+    margin: auto;
+    text-align: center;
+}
+.heading{
+    text-align: center;
+    color: red;
+}
+
+.allpr{
+    width: 100%;
+    height: auto;
+   background-image: url("../Images/1737633003053.jpg");
+   background-repeat: no-repeat;
+   background-size: cover;
+}

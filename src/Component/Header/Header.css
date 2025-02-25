@@ -1,0 +1,39 @@
+.logo {
+  padding: 3px;
+  height: 50px;
+}
+
+.logo img {
+  height: 100%;
+  width: 100%;
+}
+.nav1 {
+  background: none;
+  width: 80%;
+  margin: auto; 
+  font-weight: bolder;
+  background-color: #fbd7d19e;
+  position: sticky;
+  top: 0px;
+  font-weight: bold;
+}
+
+.ulweight li {
+  font-weight: bolder;
+  font-size: 20px;
+}
+
+.searchbar {
+  margin-left: auto;
+  margin-right: 15px;
+}
+.searchform {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.searchbutton {
+  background-color: blue;
+  color: aliceblue;
+}

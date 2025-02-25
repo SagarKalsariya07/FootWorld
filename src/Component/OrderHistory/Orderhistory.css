@@ -1,0 +1,103 @@
+
+/* For backgrond image */
+.orerall{
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    background-image: url("../Images/1737632315576.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* for OrderHistory table */
+.order1{
+    max-width: 900px;
+    margin: auto;
+    margin-top: 15px;
+    height: auto;
+    min-height: 100vh;
+}
+.order1 h1{
+    font-weight: bolder;
+    background-color: beige;
+    color: rgb(29, 117, 195);
+}
+.order1 table{
+    background-color: rgba(240, 248, 255, 0.644);
+    width: 80%;
+    margin: auto;
+    margin-top: 25px;
+    /* color: black; */
+}
+.productdetail table,.order1 table{
+    box-shadow: 2px 2px 20px 2px;
+}
+.order1 table thead tr th{
+    background-color: rgb(123, 248, 81);
+    text-align: start;
+}
+.productdetail table thead tr th{
+    text-align: start;
+    background-color: rgba(0, 255, 174, 0.463);
+}
+.order1 table tbody tr td,.productdetail table tbody tr td{
+    padding: 10px;
+    text-align: center;
+}
+.yorder{
+    font-size: xx-large;
+    font-weight: bolder;
+}
+.productdetail{
+    width:800px;
+    margin: auto;
+    margin-top: 15px;
+    height:auto;
+}
+.productdetail table{
+    background-color: rgba(240, 248, 255, 0.614);
+}
+.spinner{
+    width: 80%;
+    height: 100vh;
+    margin: auto;
+    align-items: center;
+    background-color: rgba(254, 247, 247, 0.3);
+}
+
+
+/* For empty order */
+
+.empty-order-history {
+    text-align: center;
+    margin-top: 50px;
+    height: 100vh;
+  }
+  
+  .empty-order-image {
+    width: 200px;
+    height: auto;
+    margin-bottom: 20px;
+  }
+  
+  .shop-now-button {
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .shop-now-button:hover {
+    background-color: #e65c50;
+  }
+
+  /* For Modal view */
+  .madalview{
+    width: 100%;
+    height: auto;
+  }
+  
