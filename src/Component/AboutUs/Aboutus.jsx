@@ -61,7 +61,7 @@ const Aboutus = () => {
                   <b>Slogan</b>
                   <ul>
                     <li>
-                      Famous tagline: <b>Impossible Is Nothing</b>
+                      Famous tagline: <b> Nothing Is Impossible</b>
                     </li>
                   </ul>
                 </li>
