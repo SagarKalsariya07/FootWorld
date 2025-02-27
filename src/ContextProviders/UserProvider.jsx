@@ -16,7 +16,7 @@ const UserProvider = ({children}) => {
     useEffect(() => {
         try { 
             setLoading(true)
-            const usr = auth.onAuthStateChanged((user) => {
+            const usr = auth.onAuthStateChanged((user) => {                                
                 setCuser(user);
             });
                 
@@ -31,34 +31,29 @@ const UserProvider = ({children}) => {
     }, []);
 
     useEffect(() => {
+        try {
+            setLoading(true);
     
-            try {
-                setLoading(true)
-
-                const usr = onSnapshot(collection(database, "Users"),(item)=>{
-                    const user = item.docs?.map((doc1)=>({
-                        id:doc1.id,
-                        ...doc1.data(),
-                    }))
-                    setAllusers(user)
-                });
-
-                return () => usr();
-            } catch (error) {
-                console.error("Error in getting users details", error);
-
-            } finally{
-                setLoading(false)
-            }
- 
-       
-    }, [cuser])
+            const usr = onSnapshot(collection(database, "Users"), (item) => {
+                const user = item.docs?.map((doc1) => ({
+                    id: doc1.id,
+                    ...doc1.data(),
+                }));
+                setAllusers(user);
+            });
+    
+            return () => usr();
+        } catch (error) {
+            console.error("Error in getting users details", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+    
 
     useEffect(()=>{
-        try {
-            
+        try {          
             if (cuser) {
-
                 if (allusers) {
                     const fulldetail = allusers?.find((abc) => abc.email === cuser.email);
                     setCurrentuserfulldetail(fulldetail)

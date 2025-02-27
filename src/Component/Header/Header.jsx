@@ -61,8 +61,6 @@ const Header = () => {
             <Link to="/about" className="nav-link" title="Know Us">
               <li className="nav-item">About Us</li>
             </Link>
-              
-          <h1>Hello from branch</h1>
             {user.currentuserfulldetail?.role == "admin" && (
               <Link to="/addproducts" className="nav-link" title="Add New">
                 <li className="nav-item">Add Product</li>
@@ -73,11 +71,6 @@ const Header = () => {
                 <li className="nav-item">Users</li>
               </Link>
             )}
-            {/* {user.currentuserfulldetail?.role == "admin" && (
-              <Link to="/addtextfeild" className="nav-link">
-                <li className="nav-item">Add</li>
-              </Link>
-            )} */}
             {user.currentuserfulldetail?.role == "user" && (
               <Link to="/allproducts" className="nav-link " title="Shop Now">
                 <li className="nav-item">AllProducts</li>
@@ -109,6 +102,7 @@ const Header = () => {
           </div>
         </div>
       </nav>
+      
     </>
   );
 };

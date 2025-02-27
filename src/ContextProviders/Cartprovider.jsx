@@ -18,7 +18,6 @@ const Cartprovider = ({ children }) => {
         try {
             if (user?.cuser) {
                 setLoading(true)
-
                 const crt = onSnapshot(doc(database, "Cart", user.cuser?.uid), (userdata) => {
                     if (userdata.exists()) {
                         const cart1 = userdata?.data()?.items;
@@ -28,6 +27,8 @@ const Cartprovider = ({ children }) => {
 
                 return () => crt();
             }
+
+
 
 
         } catch (error) {

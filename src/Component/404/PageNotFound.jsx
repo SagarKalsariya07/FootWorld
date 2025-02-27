@@ -1,11 +1,14 @@
 import {  useNavigate } from "react-router-dom";
 import "./PageNotFound.css"; 
+import { useContext } from "react";
+import { Usercontext } from "../../ContextProviders/UserProvider";
 
 const PageNotFound = () => {
     const navigate = useNavigate();
-
+    const user = useContext(Usercontext)
     const backtohomepage = () =>{
-        navigate(`/home`)
+       if(user.cuser) navigate(`/home`)
+        else  return;
     }
   return (
     <>
@@ -20,7 +23,7 @@ const PageNotFound = () => {
         <p className="notfound-text">
           Oops! The page youre looking for doesnt exist.
         </p>
-        <p href="/home" className="notfound-link" onClick={backtohomepage} role="button"> 
+        <p href="/login" className="notfound-link" onClick={backtohomepage} role="button"> 
           Go back to homepage
         </p>
       </div>

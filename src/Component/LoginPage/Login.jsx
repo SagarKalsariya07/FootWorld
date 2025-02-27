@@ -31,26 +31,29 @@ const Login = () => {
   };
 
   const logintosite = async (e) => {
-    e.preventDefault();
-    if (loginuser.email !== "") {
-      if (loginuser.password !== "") {
+    if (user1) {
+      e.preventDefault();
+      if (loginuser.email !== "") {
+        if (loginuser.password !== "") {
 
-        const passwordverify = user1.allusers?.find((itm) => itm.email == loginuser.email && itm.password == loginuser.password)
-        if (passwordverify) {
-          await signInWithEmailAndPassword(
-            auth,
-            loginuser.email,
-            loginuser.password
-          );
-          navigate(`/home`);
+          const passwordverify = user1.allusers?.find((itm) => itm.email == loginuser.email && itm.password == loginuser.password)
+
+          if (passwordverify) {
+            await signInWithEmailAndPassword(
+              auth,
+              loginuser.email,
+              loginuser.password
+            );
+            navigate(`/home`);
+          } else {
+            alert("User Not Found!!Check Your Password Or Check your Email Or Register Yourself");
+          }
         } else {
-          alert("User Not Found!!Check Your Password Or Check your Email Or Register Yourself");
+          alert("Enter Your Password");
         }
       } else {
-        alert("Enter Your Password");
+        alert("Enter Your Email");
       }
-    } else {
-      alert("Enter Your Email");
     }
   };
 

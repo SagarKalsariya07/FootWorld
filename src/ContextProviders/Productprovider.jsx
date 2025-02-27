@@ -10,9 +10,7 @@ const Productprovider = ({ children }) => {
     const [loading, setLoading] = useState();
     const [products, setProducts] = useState();
 
-
     useEffect(() => {
-
         try {
             setLoading(true)
             const pro = onSnapshot(collection(database, "Products"), (pritem) => {

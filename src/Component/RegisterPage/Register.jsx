@@ -18,14 +18,54 @@ const Register = () => {
     mobileno: "",
   });
   const navigate = useNavigate();
+  const [error, setError] = useState('')
 
   const user = useContext(Usercontext);
 
   const handlechange = (item) => {
+    const { name, value } = item.target;
+
     setRegisteruser((rstat) => ({
       ...rstat,
-      [item.target.name]: item.target.value,
+      [name]: value,
     }));
+
+    setError((preverror) => {
+      let newerror = { ...preverror };
+
+      if (name === "password") {
+
+        const specialcharactercheck = /[!@#$%&*]/.test(value);
+        const capitalletter = /[A-Z]/.test(value);
+        const letter8 = value.length >= 8;
+
+        if (letter8) {
+          if (capitalletter) {
+            if (specialcharactercheck) {
+              delete newerror.password;
+            } else {
+              newerror.password = "* Password must be contain a special character.";
+            }
+          }
+          else {
+            newerror.password = "* Password must contain at least 1 capital letter";
+          }
+        } else {
+          newerror.password = "* Password should be 8 charcters or above";
+        }
+      }
+      else if (name == "mobileno") {
+        let checklength = value.length >= 10;
+
+        if (checklength) delete newerror.mobileno;
+        else newerror.mobileno = "* Mobile number should be equal to 10 characters";
+      } else {
+        if (value.trim() !== " ") {
+          delete newerror[name];
+        }
+      }
+      return newerror;
+    })
   };
 
 
@@ -33,66 +73,39 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      if (registeruser.name !== "") {
-        if (registeruser.email !== "") {
-          if (registeruser.password !== "") {
-            if (registeruser.role !== "") {
-              if (registeruser.mobileno !== "") {
-                if (registeruser.address !== "") {
+      const emailverify = user.allusers?.every(
+        (itm) => itm.email !== registeruser.email
+      );
 
-                  const emailverify = user.allusers?.every(
-                    (itm) => itm.email !== registeruser.email
-                  );
+      if (!emailverify) return alert("Email Already Exists! Please Use Different Email");
 
-                  if (emailverify) {
-                    const userdetail = await createUserWithEmailAndPassword(
-                      auth,
-                      registeruser.email,
-                      registeruser.password
-                    );
-                    const newuser1 = {
-                      ...registeruser,
-                      createdAt: new Date(),
-                    };
+      const userdetail = await createUserWithEmailAndPassword(
+        auth,
+        registeruser.email,
+        registeruser.password
+      );
+      const newuser1 = {
+        ...registeruser,
+        createdAt: new Date(),
+      };
 
-                    if (userdetail) {
-                      await setDoc(
-                        doc(database, "Users", userdetail.user.uid),
-                        newuser1
-                      )
-                      auth.signOut();
-                      navigate(`/login`);
-                    }
-
-                    setRegisteruser({
-                      name: "",
-                      email: "",
-                      role: "",
-                      password: "",
-                      address: "",
-                      mobileno: "",
-                    });
-                  } else {
-                    alert("Email Already Exists! Please Use Different Email");
-                  }
-                } else {
-                  alert("Enter Your Address");
-                }
-              } else {
-                alert("Enter Your Mobile No");
-              }
-            } else {
-              alert("Select Your Role");
-            }
-          } else {
-            alert("Enter Your Password");
-          }
-        } else {
-          alert("Enter Your Email");
-        }
-      } else {
-        alert("Enter Your Name");
+      if (userdetail) {
+        await setDoc(
+          doc(database, "Users", userdetail.user.uid),
+          newuser1
+        )
+        auth.signOut();
+        navigate(`/login`);
       }
+
+      setRegisteruser({
+        name: "",
+        email: "",
+        role: "",
+        password: "",
+        address: "",
+        mobileno: "",
+      });
     } catch (error) {
       console.error("Error in storing user", error);
     }
@@ -112,7 +125,7 @@ const Register = () => {
       </HelmetProvider>
       <div className="main">
         <div className="regform">
-          <form >
+          <form onSubmit={savetodatabase} >
             <div> <div className="card-header bg-primary text-white text-center">
               <h3>Register Here</h3>
             </div><br /></div>
@@ -126,7 +139,11 @@ const Register = () => {
                 id="formGroupExampleInput"
                 placeholder="Enter Your Name"
                 onChange={(e) => handlechange(e)}
+                required
               />
+              {error &&
+                <div className="text-red-600 font-bold text-base">{error.name}</div>
+              }
             </div>
             <div className="form-group gap">
               <label htmlFor="exampleInputEmail1">Email address</label>
@@ -139,7 +156,10 @@ const Register = () => {
                 aria-describedby="emailHelp"
                 placeholder="Enter Your email"
                 onChange={(e) => handlechange(e)}
-              />
+                required
+              />{error &&
+                <div className="text-red-600 font-bold text-base">{error.email}</div>
+              }
               <small id="emailHelp" className="form-text text-muted">
                 Well never share your email with anyone else.
               </small>
@@ -170,7 +190,9 @@ const Register = () => {
                 <option className="dropdown-item" value="user" type="button">
                   user
                 </option>
-              </select>
+              </select>{error &&
+                <div className="text-red-600 font-bold text-base">{error.role}</div>
+              }
             </div>
             <div className="form-group gap">
               <label htmlFor="exampleInputPassword1">Password</label>
@@ -182,7 +204,10 @@ const Register = () => {
                 id="exampleInputPassword1"
                 placeholder="Enter Your Password"
                 onChange={(e) => handlechange(e)}
-              />
+                required
+              />{error &&
+                <div className="text-red-600 font-bold text-base">{error.password}</div>
+              }
             </div>
             <div className="form-group gap">
               <label htmlFor="exampleFormControlTextarea1">Address</label>
@@ -193,7 +218,11 @@ const Register = () => {
                 name="address"
                 value={registeruser.address}
                 onChange={(e) => handlechange(e)}
+                required
               ></textarea>
+              {error &&
+                <div className="text-red-600 font-bold text-base">{error.address}</div>
+              }
             </div>
             <div data-mdb-input-init className="form-outline gap">
               <label className="form-label" htmlFor="typePhone">
@@ -206,13 +235,15 @@ const Register = () => {
                 name="mobileno"
                 value={registeruser.mobileno}
                 onChange={(e) => handlechange(e)}
-              />
+                required
+              />{error &&
+                <div className="text-red-600 font-bold text-base">{error.mobileno}</div>
+              }
             </div>
             <div className="gap submitbutton">
               <button
                 type="submit"
                 className="btn btn-primary"
-                onClick={savetodatabase}
               >
                 Register
               </button>
