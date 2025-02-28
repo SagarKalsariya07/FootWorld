@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Usercontext } from "../../ContextProviders/UserProvider";
+import { toast, ToastContainer } from "react-toastify";
 
 const Register = () => {
   const [registeruser, setRegisteruser] = useState({
@@ -78,7 +79,16 @@ const Register = () => {
       );
 
       if (!emailverify) return alert("Email Already Exists! Please Use Different Email");
-
+      toast.success('✅ Registered succesfully!', {
+                  position: "top-right",
+                  autoClose: 2000,
+                  hideProgressBar: false,
+                  closeOnClick: false,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                  });
       const userdetail = await createUserWithEmailAndPassword(
         auth,
         registeruser.email,
@@ -141,9 +151,7 @@ const Register = () => {
                 onChange={(e) => handlechange(e)}
                 required
               />
-              {error &&
-                <div className="text-red-600 font-bold text-base">{error.name}</div>
-              }
+            
             </div>
             <div className="form-group gap">
               <label htmlFor="exampleInputEmail1">Email address</label>
@@ -157,9 +165,7 @@ const Register = () => {
                 placeholder="Enter Your email"
                 onChange={(e) => handlechange(e)}
                 required
-              />{error &&
-                <div className="text-red-600 font-bold text-base">{error.email}</div>
-              }
+              />
               <small id="emailHelp" className="form-text text-muted">
                 Well never share your email with anyone else.
               </small>
@@ -220,9 +226,6 @@ const Register = () => {
                 onChange={(e) => handlechange(e)}
                 required
               ></textarea>
-              {error &&
-                <div className="text-red-600 font-bold text-base">{error.address}</div>
-              }
             </div>
             <div data-mdb-input-init className="form-outline gap">
               <label className="form-label" htmlFor="typePhone">
@@ -260,6 +263,9 @@ const Register = () => {
             </div>
           </form>
         </div>
+        <ToastContainer>
+
+        </ToastContainer>
       </div>
     </>
   );

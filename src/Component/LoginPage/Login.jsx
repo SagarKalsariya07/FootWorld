@@ -10,6 +10,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import './Login.css'
 import { Usercontext } from "../../ContextProviders/UserProvider";
+import { toast, ToastContainer } from "react-toastify";
 
 
 const Login = () => {
@@ -33,11 +34,18 @@ const Login = () => {
   const logintosite = async (e) => {
     if (user1) {
       e.preventDefault();
-      if (loginuser.email !== "") {
-        if (loginuser.password !== "") {
 
           const passwordverify = user1.allusers?.find((itm) => itm.email == loginuser.email && itm.password == loginuser.password)
-
+          toast.success('✅ Logged in succesfully!', {
+            position: "top-right",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
           if (passwordverify) {
             await signInWithEmailAndPassword(
               auth,
@@ -48,12 +56,7 @@ const Login = () => {
           } else {
             alert("User Not Found!!Check Your Password Or Check your Email Or Register Yourself");
           }
-        } else {
-          alert("Enter Your Password");
-        }
-      } else {
-        alert("Enter Your Email");
-      }
+       
     }
   };
 
@@ -89,7 +92,7 @@ const Login = () => {
       </HelmetProvider>
       <div className="main1">
         <div className="regform1">
-          <form className="loginform">
+          <form className="loginform"  onSubmit={logintosite}>
             <div className="form-group gap">
               <label htmlFor="exampleInputEmail1">Email address</label>
               <input
@@ -101,6 +104,7 @@ const Login = () => {
                 aria-describedby="emailHelp"
                 placeholder="Enter Your email"
                 onChange={(e) => handlechange(e)}
+                required
               />
             </div>
             <div className="form-group gap">
@@ -113,13 +117,13 @@ const Login = () => {
                 id="exampleInputPassword"
                 placeholder="Enter Your Password"
                 onChange={(e) => handlechange(e)}
+                required
               />
             </div>
             <div className="gap submitbutton1">
               <button
                 type="submit"
                 className="btn btn-primary "
-                onClick={logintosite}
               >
                 Login
               </button>
@@ -143,6 +147,9 @@ const Login = () => {
             </div>
           </form>
         </div>
+        <ToastContainer>
+
+        </ToastContainer>
       </div>
     </>
   );
