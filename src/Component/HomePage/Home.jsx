@@ -98,7 +98,7 @@ const Home = () => {
   };
 
   const editproduct = (productdata) => {
-    navigate(`/addproducts`, { state: { productid: productdata } });
+    navigate(`/addproducts`, { state: { productfulldetail: productdata } });
   };
 
   const productdetail = (id) => {

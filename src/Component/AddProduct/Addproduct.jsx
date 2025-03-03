@@ -17,31 +17,21 @@ const Addproduct = () => {
     category: "",
     stock: "",
   });
-  const [visible, setVisible] = useState({
-    editModal: false,
-    showAddModal: false, // New state for controlling the add product modal
-  });
-  const [editedProduct, setEditedProduct] = useState({
-    productname: "",
-    description: "",
-    price: "",
-    category: "",
-    stock: "",
-  });
+  const [visible, setVisible] = useState(false);
+
+  const [editedProduct, setEditedProduct] = useState({});
 
   const productcontext = useContext(Productcontext);
 
   const location = useLocation();
 
-    useEffect(()=>{
-      if(location?.state?.productid){
-        setEditedProduct(location.state?.productid)
-        setVisible((prev)=>({
-          ...prev,
-          editModal:true,
-        }))
-      }
-    },[location.state])
+  useEffect(() => {
+    if (location.state?.productfulldetail) {
+      setEditedProduct(location.state?.productfulldetail)
+      setVisible(true)
+    }
+  }, [location.state])
+
   const changehandler = (item) => {
     setProduct((prev) => ({
       ...prev,
@@ -52,60 +42,59 @@ const Addproduct = () => {
   const addtodatabse = async (e) => {
     e.preventDefault();
 
-    if (product.price > 0) {
-      if (product.stock > 0) {
-        await addDoc(collection(database, "Products"), {
-          ...product,
-          createdAt: new Date(),
-        });
-        setProduct({
-          productname: "",
-          description: "",
-          price: "",
-          category: "",
-          stock: "",
-        });
+    const action = e.nativeEvent.submitter.value;
+    if (action === "Add Product") {
+          await addDoc(collection(database, "Products"), {
+            ...product,
+            createdAt: new Date(),
+          });
+          setProduct({
+            productname: "",
+            description: "",
+            price: "",
+            category: "",
+            stock: "",
+          });
 
-        // Close the modal
-        setVisible((prev) => ({ ...prev, showAddModal: false }));
-      } else {
-        alert("Stock Can not be zero");
-      }
-    } else {
-      alert("Price Cannot be zero or  less than zero");
+          // Close the modal
+          setVisible(false);
+       
+    } else if (action === "Save Edit") {
+      await updateDoc(doc(database, "Products", editedProduct.id), {
+        ...product,
+      });
+
+      setVisible(false);
+      setEditedProduct({})
     }
-
   };
 
   const handleedit = (items) => {
     setEditedProduct(items);
-    setVisible((prev) => ({
-      ...prev,
-      editModal: true,
-    }))
+    setVisible(true)
   };
 
-  const handlechange = (ev) => {
-    setEditedProduct((item) => ({
-      ...item,
-      [ev.target.name]: ev.target.value,
-    }));
-  };
+  useEffect(() => {
+    editedProduct && setProduct(
+      {
+        productname: editedProduct.productname || " ",
+        description: editedProduct.description || " ",
+        price: editedProduct.price || " ",
+        category: editedProduct.category || " ",
+        stock: editedProduct.stock || " ",
+      }
+    );
+  }, [editedProduct])
 
-  const saveEdit = async (e) => {
-    e.preventDefault();
-    await updateDoc(doc(database, "Products", editedProduct.id), {
-      ...editedProduct,
-    });
-    setVisible((prev) => ({
-      ...prev,
-      editModal: false,
-    }))
-  };
 
-  const deleteproduct = async (itm) => {
-    await deleteDoc(doc(database, "Products", itm.id));
-  };
+  const closemodal = () => {
+    setVisible(false)
+    setEditedProduct({})
+  }
+
+  const deleteproduct = async (itm) => await deleteDoc(doc(database, "Products", itm.id));
+
+  const iseditproduct = Object.keys(editedProduct).length > 0;
 
   return (
     <>
@@ -125,7 +114,7 @@ const Addproduct = () => {
                   <Button
                     className="addbutton"
                     variant="primary"
-                    onClick={() => setVisible((prev) => ({ ...prev, showAddModal: true }))}
+                    onClick={() => setVisible(true)}
                   >
                     Add New Product
                   </Button>
@@ -171,13 +160,13 @@ const Addproduct = () => {
           </table>
         </div>
 
-        {/* Add Product Modal */}
-        <Modal show={visible.showAddModal} size="lg" onHide={() => setVisible((prev) => ({ ...prev, showAddModal: false }))}>
+        {/*Product Modal */}
+        <Modal show={visible} size="lg" onHide={closemodal}>
           <Modal.Header closeButton>
             <Modal.Title>Add New Product</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <form onSubmit={addtodatabse} method="post">
+            <form onSubmit={addtodatabse} method="post">
               <div className="card-header bg-primary text-white text-center">
                 <h3>Add New Product</h3>
               </div><br />
@@ -248,100 +237,14 @@ const Addproduct = () => {
                 />
               </div>
               <div>
-                <Button variant="secondary" className="cancelbutton controlbutton1" onClick={() => setVisible((prev) => ({ ...prev, showAddModal: false }))}>
+                <Button variant="secondary" className="cancelbutton controlbutton1" onClick={closemodal}>
                   Close
                 </Button>
-                <Button variant="primary" type="submit" className="subbutton">
-                  Add Product
+                <Button variant="primary" type="submit" className="subbutton" value={iseditproduct ? "Save Edit" : "Add Product"}>
+                  {iseditproduct ? "Save Edit" : "Add Product"}
                 </Button>
               </div>
             </form>
-          </Modal.Body>
-        </Modal>
-
-        {/* Edit Product Modal */}
-        <Modal show={visible.editModal} size="lg" onHide={() => setVisible((prev) => ({ ...prev, editModal: false }))}>
-          <Modal.Header closeButton>
-            <Modal.Title>Edit Product</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="form">
-              <form onSubmit={saveEdit}>
-                <div className="card-header bg-primary text-white text-center">
-                  <h3>Edit Product</h3>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="exampleInputEmail1">Product Name</label>
-                  <input
-                    name="producname"
-                    value={editedProduct.productname}
-                    type="text"
-                    className="form-control"
-                    id="exampleInputtextt"
-                    placeholder="Enter Product name"
-                    onChange={(e) => handlechange(e)}
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="exampleFormControlTextarea1">Description</label>
-                  <textarea
-                    className="form-control"
-                    id="exampleFormControlTextarea1"
-                    rows="3"
-                    name="description"
-                    value={editedProduct.description}
-                    onChange={(e) => handlechange(e)}
-                  ></textarea>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="typePhone">Price</label>
-                  <input
-                    type="number"
-                    id="typePhone"
-                    className="form-control"
-                    name="price"
-                    onChange={(e) => handlechange(e)}
-                    value={editedProduct.price}
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="typePhone">Category</label>
-                  <select
-                    className="form-control"
-                    name="category"
-                    value={editedProduct.category}
-                    onChange={(e) => handlechange(e)}
-                  >
-                    <option disabled value="">--Select--</option>
-                    <option value="all">All</option>
-                    <option value="men">Men</option>
-                    <option value="women">Women</option>
-                    <option value="sports">Sports</option>
-                    <option value="formal">Formal</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="typePhone">Stock</label>
-                  <input
-                    type="number"
-                    id="typePhone"
-                    className="form-control"
-                    name="stock"
-                    onChange={(e) => handlechange(e)}
-                    value={editedProduct.stock}
-                  />
-                </div>
-
-                <div>
-                  <Button variant="secondary" className="cancelbutton controlbutton1" onClick={() => setVisible((prev) => ({ ...prev, editModal: false }))}>
-                    Close
-                  </Button>
-                  <Button variant="primary" type="submit" className="subbutton">
-                    Save Update
-                  </Button>
-                </div>
-              </form>
-            </div>
           </Modal.Body>
         </Modal>
       </div>
