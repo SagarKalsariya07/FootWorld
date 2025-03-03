@@ -44,7 +44,7 @@ const Login = () => {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            theme: "light",
+            theme: "dark",
             });
           if (passwordverify) {
             await signInWithEmailAndPassword(
