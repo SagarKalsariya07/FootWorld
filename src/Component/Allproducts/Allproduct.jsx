@@ -26,23 +26,24 @@ const Allproduct = () => {
 
     const navigate = useNavigate();
 
+    //Getting Context Value
     const user = useContext(Usercontext)
     const cart = useContext(Cartcontext);
     const productdetail = useContext(Productcontext)
 
+    //Puting data into setdata state on first render or on first time page call
     useEffect(() => {
-
         setData(() => ({
             products: productdetail.products,
             filterproduct: productdetail.products,
         }));
-
-
     }, []);
 
+    //Function for incrementing value of clicked product
     const increment = (id) => {
-        const newquantity = (quantity[id] || 1) + 1;
+        const newquantity = (quantity[id] || 1) + 1; //increment value by 1
 
+        //Updating quantity of specidic product using it's id
         setQuantity((abc) => {
             return {
                 ...abc,
@@ -51,9 +52,12 @@ const Allproduct = () => {
         });
     };
 
+    //Function for decrementing value of clicked product
     const decrement = (id) => {
         const newquantity = (quantity[id] || 1) - 1;
         if (newquantity > 0) {
+
+            //Updating quantity of specidic product using it's id
             setQuantity((abc) => {
                 return {
                     ...abc,
@@ -63,62 +67,75 @@ const Allproduct = () => {
         }
     };
 
+    //funtion for gtting all product after filtering
     const allproduct = () => {
         setHeading("All Products");
-        setData((xyz) => ({
-            ...xyz,
+        setData((filteredData) => ({
+            ...filteredData,
             products: productdetail.products,
         }));
     };
 
+    //Function for filtering category of mens product
     const mensproduct = () => {
         setHeading("Men's Products");
-        const mens = productdetail.products?.filter((itm) => itm.category == "men");
+        const mens = productdetail.products?.filter((itm) => itm.category == "men"); //finding mens category products from products doc
 
-        setData((xyz) => ({
-            ...xyz,
+        setData((filteredData) => ({
+            ...filteredData,
             products: mens,
         }));
     };
 
+    //Function for filtering category of womens product
     const womensproduct = () => {
         setHeading("Women's Products");
-        const womens = productdetail.products?.filter((itm) => itm.category == "women");
+        const womens = productdetail.products?.filter((itm) => itm.category == "women");//finding womens category products from products doc
 
-        setData((xyz) => ({
-            ...xyz,
+        setData((filteredData) => ({
+            ...filteredData,
             products: womens,
         }));
     };
 
+    //Function for filtering category of sport product
     const sportproduct = () => {
         setHeading("Sport's Products");
         const sports = productdetail.products?.filter(
-            (itm) => itm.category == "sports"
+            (itm) => itm.category == "sports"      //finding sports category products from products doc
         );
 
-        setData((xyz) => ({
-            ...xyz,
+        setData((filteredData) => ({
+            ...filteredData,
             products: sports,
         }));
     };
-    const addtocart = async (cart1) => {
-        const newquantity = quantity[cart1.id] || 1;
 
+
+    //Add to cart function
+    const addtocart = async (cart1) => {
+        const newquantity = quantity[cart1.id] || 1; //Get the quantinty of clicked product 
+        
+        //Checking if there re any productts present or not in cart
         if (cart.cartitem?.length > 0) {
-            const sameproduct = cart.cartitem?.find((item) => item.productid == cart1.id);
+            const sameproduct = cart.cartitem?.find((item) => item.productid == cart1.id); //Checking condition for if there already this product is there in cart
             if (sameproduct) {
+                //If the product is there then only product quantity should be updated
                 const updatecart = cart.cartitem?.map((itm) =>
-                    itm.productid == cart1.id
+                    itm.productid === cart1.id
                         ? { ...itm, quantity: (itm.quantity = newquantity) }
                         : itm
-                );
+                ); 
 
+                //Updating Cart Document
                 await updateDoc(doc(database, "Cart", user.cuser.uid), {
                     items: updatecart,
                 });
                 navigate(`/cart`);
-            } else {
+            } 
+            // If there are products present in cart and not that user want 
+            // right now than add this product in cart 
+            else {  
                 const newproduct = {
                     productid: cart1.id,
                     price: cart1.price,
@@ -129,7 +146,9 @@ const Allproduct = () => {
                 });
                 navigate(`/cart`);
             }
-        } else {
+        } 
+        //If there are no product in cart than clicked into cart 
+        else {
             const firstproduct = {
                 productid: cart1.id,
                 price: cart1.price,

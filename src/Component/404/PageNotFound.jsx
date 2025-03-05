@@ -6,6 +6,7 @@ import { Usercontext } from "../../ContextProviders/UserProvider";
 const PageNotFound = () => {
     const navigate = useNavigate();
     const user = useContext(Usercontext)
+    
     const backtohomepage = () =>{
        if(user.cuser) navigate(`/home`)
         else  return;

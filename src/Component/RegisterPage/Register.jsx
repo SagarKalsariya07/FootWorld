@@ -23,46 +23,49 @@ const Register = () => {
 
   const user = useContext(Usercontext);
 
+  //Handled change on form
   const handlechange = (item) => {
     const { name, value } = item.target;
-
+    
+    //Control the input
     setRegisteruser((rstat) => ({
       ...rstat,
       [name]: value,
     }));
 
+    //Set the error for different fields
     setError((preverror) => {
-      let newerror = { ...preverror };
+      let newerror = { ...preverror }; //Create copy of error using spread operator
 
-      if (name === "password") {
+      if (name === "password") { //Check the error for password
 
-        const specialcharactercheck = /[!@#$%&*]/.test(value);
-        const capitalletter = /[A-Z]/.test(value);
-        const letter8 = value.length >= 8;
+        const specialcharactercheck = /[!@#$%&*]/.test(value); //check if any special character include in password
+        const capitalletter = /[A-Z]/.test(value);//check if any Capital letter include in password
+        const letter8 = value.length >= 8;//check if password length is 8 in password
 
         if (letter8) {
           if (capitalletter) {
             if (specialcharactercheck) {
-              delete newerror.password;
+              delete newerror.password; //if all condition satisfied delete error for password
             } else {
-              newerror.password = "* Password must be contain a special character.";
+              newerror.password = "* Password must be contain a special character.";//give error message for special character
             }
           }
           else {
-            newerror.password = "* Password must contain at least 1 capital letter";
+            newerror.password = "* Password must contain at least 1 capital letter";//give error message forcapital letter
           }
         } else {
-          newerror.password = "* Password should be 8 charcters or above";
+          newerror.password = "* Password should be 8 charcters or above";//give error message for length
         }
       }
-      else if (name == "mobileno") {
-        let checklength = value.length >= 10;
+      else if (name == "mobileno") { //Give error for mobile no
+        let checklength = value.length >= 10; //check length of 10 characters
 
-        if (checklength) delete newerror.mobileno;
-        else newerror.mobileno = "* Mobile number should be equal to 10 characters";
+        if (checklength) delete newerror.mobileno; //delete if no error
+        else newerror.mobileno = "* Mobile number should be equal to 10 characters";//give new message if error presist
       } else {
         if (value.trim() !== " ") {
-          delete newerror[name];
+          delete newerror[name]; //delete error for all feilds
         }
       }
       return newerror;
@@ -70,15 +73,18 @@ const Register = () => {
   };
 
 
+  //Add user to database 
   const savetodatabase = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); //Prevent submission auto
 
     try {
+      //Verify email
       const emailverify = user.allusers?.every(
         (itm) => itm.email !== registeruser.email
       );
 
       if (!emailverify) return alert("Email Already Exists! Please Use Different Email");
+      //Toast message
       toast.success('✅ Registered succesfully!', {
                   position: "top-right",
                   autoClose: 2000,
@@ -89,6 +95,7 @@ const Register = () => {
                   progress: undefined,
                   theme: "light",
                   });
+       //Added user in firebase Authentication           
       const userdetail = await createUserWithEmailAndPassword(
         auth,
         registeruser.email,
@@ -100,14 +107,16 @@ const Register = () => {
       };
 
       if (userdetail) {
+        //Add user in firestore
         await setDoc(
           doc(database, "Users", userdetail.user.uid),
           newuser1
         )
-        auth.signOut();
+        auth.signOut(); //Signout from site beacuse firebase authentication auto log in when creating user
         navigate(`/login`);
       }
 
+      //Clear user form after submission
       setRegisteruser({
         name: "",
         email: "",
@@ -120,7 +129,6 @@ const Register = () => {
       console.error("Error in storing user", error);
     }
   };
-
 
   const login = () => {
     navigate(`/login`);
@@ -151,7 +159,6 @@ const Register = () => {
                 onChange={(e) => handlechange(e)}
                 required
               />
-            
             </div>
             <div className="form-group gap">
               <label htmlFor="exampleInputEmail1">Email address</label>
@@ -196,7 +203,8 @@ const Register = () => {
                 <option className="dropdown-item" value="user" type="button">
                   user
                 </option>
-              </select>{error &&
+              </select>
+              {error &&
                 <div className="text-red-600 font-bold text-base">{error.role}</div>
               }
             </div>
@@ -211,7 +219,8 @@ const Register = () => {
                 placeholder="Enter Your Password"
                 onChange={(e) => handlechange(e)}
                 required
-              />{error &&
+              />
+              {error &&
                 <div className="text-red-600 font-bold text-base">{error.password}</div>
               }
             </div>

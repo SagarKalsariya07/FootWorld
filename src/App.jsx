@@ -17,6 +17,7 @@ import Ordersuccess from "./Component/Ordersuccess/Ordersuccess";
 import { Usercontext } from "./ContextProviders/UserProvider";
 import Pracice from "./Component/AddProduct/Pracice";
 import PageNotFound from "./Component/404/PageNotFound";
+import Profile from "./Component/Profile/Profile";
 // import Textarea from "./Component/Textarea"
 
 function App() {
@@ -27,9 +28,12 @@ function App() {
   
   return (
     <Routes>
+      {/* Route for the no page found */}
       <Route path="/nopagefound" element={<PageNotFound />} />
+      {/* A routes thats makes availabe on user log in */}
       {user?.cuser ? (
         <>
+          {/* A routes that available only for admin */}
           {user?.currentuserfulldetail?.role == "admin" ? (
             <>
               <Route path="/home" element={<Home />} />
@@ -40,10 +44,12 @@ function App() {
               <Route path="/productdetail/:id" element={<Productdetail />} />
               <Route path="/search" element={<Search />} />
               <Route path="/addtextfeild" element={<Pracice/>}/>
+              <Route path="/profile" element={<Profile/>}/>
               <Route path="*" element={<PageNotFound />} />
               </>
           )
             :
+            // A routes for users
             (<>
               <Route path="/search" element={<Search />} />
               <Route path="/home" element={<Home />} />
@@ -53,6 +59,7 @@ function App() {
               <Route path="/productdetail/:id" element={<Productdetail />} />
               <Route path="/allproducts" element={<Allproduct />} />
               <Route path="/orderhistory" element={<Orderhistory />} />
+              <Route path="/profile" element={<Profile/>}/>
               <Route path="*" element={<PageNotFound />} />
             </>
             )}
@@ -60,6 +67,7 @@ function App() {
         </>
       ) : (
         <>
+        {/* A routes for before login */}
           <Route path="/" element={<Login />} />
           <Route path="*" element={<Login />} />
           <Route path="/register" element={<Register />} />

@@ -19,42 +19,44 @@ const Orderhistory = () => {
         orderid: {},
     });
     const [visible, setVisible] = useState({});
-
+    //Get context value
     const cartitem1 = useContext(Cartcontext);
-    const user1 = useContext(Usercontext)
+    const user1 = useContext(Usercontext);
+
     const navigate = useNavigate();
 
+    //function for getting order detail
+    const getOrderDetail = async () => {
+        try {
+            setLoading(true);
+            const userid = user1?.cuser?.uid; // get user id
+            //Using firestore query get the order details
+            const ord = await getDocs(query(collection(database, "Orders"), where("Userid", "==", userid)));
+            const order = ord.docs?.map((item) => ({ id: item.id, ...item.data() }));
+            setOrderhistory(order);//assing it to orderhistory state
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    //calling getuserdetail function in rendering
     useEffect(() => {
-        const getOrderDetail = async () => {
-            try {
-                setLoading(true);
-                const userid = user1?.cuser?.uid;
-                // const Order = [];
-                const ord = await getDocs(query(collection(database, "Orders"), where("Userid", "==", userid)));
-
-
-                const order = ord.docs?.map((item) => ({ id: item.id, ...item.data() }));
-
-
-                setOrderhistory(order)
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        getOrderDetail();
-
+       getOrderDetail();
     }, []);
 
+    //Function for getting more product detail
     const moreinfo = async (order1) => {
-
+        //Get total order ids from cartitems of the  current user
         const orderids = order1.cartitem?.map((cart) => cart.productid);
 
+        //Query for getting ordered product detail from Products docs
         const fulldetail = await getDocs(query(collection(database, "Products"), where(documentId(), "in", orderids)));
 
-        const orderproductfulldetail = fulldetail.docs?.map((item) => ({ id: item.id, ...item.data() }));
+        const orderproductfulldetail = fulldetail.docs?.map((item) => ({ id: item.id, ...item.data() })); //Assign it to state 
 
+        //Adding quantity in result products
         const withquantity = orderproductfulldetail?.map((fdetail) => {
             const quant = order1.cartitem?.find((ord) => fdetail.id == ord.productid); {
                 return {
@@ -64,23 +66,29 @@ const Orderhistory = () => {
             }
         })
 
+        //Assign product data in details state
         setDetails(() => {
             return {
                 productdetails: withquantity,
                 orderid: order1.id,
             }
         });
+        //Make isible product detail table based on clicked orderid
         setVisible((prevState) => ({
             [order1.id]: !prevState[order1.id],
         }));
     };
 
+    //Function if user want to rebuy product
     const rebuyproduct = async (buyproduct) => {
-        const docref = doc(database, "Cart", user1.cuser.uid)
+        const docref = doc(database, "Cart", user1.cuser.uid);//Creating docref
 
+        //add to cart function -> check for product in cart
         if (cartitem1.length > 0) {
+            //check for matched product
             const sameproduct = cartitem1.cartitem?.map((cart) => cart.productid == buyproduct.id)
             if (sameproduct) {
+                //Update cart with only quantity
                 const updatecart = cartitem1.cartitem?.map((cart) =>
                     cart.productid == buyproduct.id ? { ...cart, quantity: cart.quantity = 1 } : cart
                 )
@@ -88,7 +96,9 @@ const Orderhistory = () => {
                     items: updatecart,
                 })
                 alert(`${buyproduct.productname} added to cart`)
-            } else {
+            } 
+            //Add entire new product with older products stays there
+            else {
                 await updateDoc(docref, {
                     items: arrayUnion({
                         productid: buyproduct.id,
@@ -99,7 +109,9 @@ const Orderhistory = () => {
                 });
                 alert(`${buyproduct.productname} added to cart`)
             }
-        } else {
+        } 
+        //Add first product if no product is there
+        else {
             await setDoc(docref, {
                 items: [
                     {
@@ -115,15 +127,10 @@ const Orderhistory = () => {
 
 
     };
-
+ 
+    //Remove history of the order from orderhistory
     const removefromhistory = async (remove) => {
-
         await deleteDoc(doc(database, "Orders", remove.id));
-
-        const remaining = orderhistory?.filter((rem) => rem.id !== remove.id);
-
-        setOrderhistory(remaining);
-
     }
 
     const shopnow = () => {

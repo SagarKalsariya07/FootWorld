@@ -19,67 +19,92 @@ import { Productcontext } from "../../ContextProviders/Productprovider";
 
 const Home = () => {
   const [quantity, setQuantity] = useState({});
+
   const navigate = useNavigate();
 
+  //Get the context values
   const user = useContext(Usercontext);
-
   const cart = useContext(Cartcontext)
-
   const product = useContext(Productcontext)
 
-  const decrement = (id) => {
-    const newquantity = (quantity[id] || 1) - 1;
-    if (newquantity > 0) {
-      setQuantity((e) => {
-        return {
-          ...e,
-          [id]: newquantity,
-        };
-      });
-    }
-  };
-
+  //Function for incrementing the wuantity value
   const increment = (id) => {
     const newquantity = (quantity[id] || 1) + 1;
     setQuantity((e) => {
       return {
         ...e,
-        [id]: newquantity,
+        [id]: newquantity, //set the quantity to desired product
       };
     });
   };
 
+  //Function for decrementing quantity
+  const decrement = (id) => {
+    const newquantity = (quantity[id] || 1) - 1;
+    if (newquantity > 0) { //check for grater than zero
+      setQuantity((e) => {
+        return {
+          ...e,
+          [id]: newquantity, //update quantity 
+        };
+      });
+    }
+  };
+
+  
+//add to cart funciton
   const addtocart = async (event) => {
     const quant = quantity[event.id] || 1;
 
     try {
-      if (cart.cartitem.length > 0) {
-        const sameitem = cart.cartitem?.find((ev) => ev.productid == event.id);
+      //ckeck for the product in cart  
+      if (cart?.cartitem.length > 0) {
+        const sameitem = cart.cartitem?.find((ev) => ev.productid == event.id);//if there is product in cart check if it is same that user want to add
 
+        //if it si the  same product than only update its quantity
         if (sameitem) {
           const updatecart = cart.cartitem?.map((item) =>
             item.productid == event.id
               ? { ...item, quantity: (item.quantity = quant) }
               : item
           );
+          //Upadte the database
           await updateDoc(doc(database, "Cart", user.cuser.uid), {
             items: updatecart,
           });
           alert(`${event.productname} added to cart`);
-        } else {
+          //after submitting value quantity reset to 1
+          setQuantity((e) => {
+            return {
+              ...e,
+              [event.id]: 1,
+            };
+          });
+        } 
+        //if its not same productt than add it to database
+        else {
           const newproduct = {
             productid: event.id,
             quantity: quant,
             price: event.price,
             createdAt: new Date(),
           }
+          //Add into the databse
           await updateDoc(doc(database, "Cart", user.cuser.uid), {
             items: arrayUnion(newproduct),
           });
-          cart.setCartitem([...cart.cartitem, newproduct]);
           alert(`${event.productname} added to cart`);
+          //Reset quanitty
+          setQuantity((e) => {
+            return {
+              ...e,
+              [event.id]: 1,
+            };
+          });
         }
-      } else {
+      } 
+      //Addi the first product to cart
+      else {
         const firstproduct = {
           productid: event.id,
           quantity: quant,
@@ -89,18 +114,26 @@ const Home = () => {
         await setDoc(doc(database, "Cart", user.cuser.uid), {
           items: [firstproduct],
         });
-        cart.setCartitem([firstproduct]);
         alert(`${event.productname} added to cart`);
+        //Reset Quantity
+        setQuantity((e) => {
+          return {
+            ...e,
+            [event.id]: 1,
+          };
+        });
       }
     } catch (error) {
       console.error("Error in adding cart", error);
     }
   };
 
+  //Edit product navigate to edit product page with state attribute of navigate
   const editproduct = (productdata) => {
     navigate(`/addproducts`, { state: { productfulldetail: productdata } });
   };
 
+  //navigate to specifci product productdetal
   const productdetail = (id) => {
     navigate(`/productdetail/${id}`);
   };

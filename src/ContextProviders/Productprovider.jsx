@@ -13,6 +13,7 @@ const Productprovider = ({ children }) => {
     useEffect(() => {
         try {
             setLoading(true)
+            //Get the product details from oroducts collection
             const pro = onSnapshot(collection(database, "Products"), (pritem) => {
                 const prd = pritem.docs.map((doc1) => ({
                     id: doc1.id,

@@ -9,7 +9,7 @@ const Ordersuccess = () => {
   const location = useLocation();
 
   useEffect(()=>{
-      if(!location.state?.orderid){
+      if(!location.state?.orderid){ // Open This page if this page get the state in location(URL)
         navigate(`/home`);
       }
   },[location.state,navigate])

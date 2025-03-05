@@ -14,6 +14,7 @@ import { toast, ToastContainer } from "react-toastify";
 
 
 const Login = () => {
+  //state for getting value of user 
   const [loginuser, setLoginuser] = useState({
     email: "",
     password: "",
@@ -21,9 +22,11 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  //Context value
   const user1 = useContext(Usercontext);
 
 
+  //Handle change of user form
   const handlechange = (item) => {
     setLoginuser((prev) => ({
       ...prev,
@@ -31,10 +34,11 @@ const Login = () => {
     }));
   };
 
+  //function for loging in
   const logintosite = async (e) => {
     if (user1) {
       e.preventDefault();
-
+          //check password
           const passwordverify = user1.allusers?.find((itm) => itm.email == loginuser.email && itm.password == loginuser.password)
           toast.success('✅ Logged in succesfully!', {
             position: "top-right",
@@ -47,6 +51,7 @@ const Login = () => {
             theme: "dark",
             });
           if (passwordverify) {
+            //log in site using firbase authentication
             await signInWithEmailAndPassword(
               auth,
               loginuser.email,
@@ -64,17 +69,22 @@ const Login = () => {
     navigate(`/register`);
   };
 
-  const provider = new GoogleAuthProvider();
+  //Log in using google 
+  const provider = new GoogleAuthProvider(); //create googleauthprovide
+
   const loginwithgoogle = async () => {
     try {
+      //log in using google
       const googleuser = await signInWithPopup(auth, provider);
-
+      //create new user
       const newuser = {
         email: googleuser.user?.email,
         name: googleuser.user?.displayName,
         role: "user",
       };
+      //check if user is not present in firestore
       const checkuser = user1.allusers?.find((auser) => auser.email !== googleuser.user?.email);
+      //if yes then add it to users doc
       if (checkuser) {
         await setDoc(doc(database, "Users", googleuser?.user.uid), newuser);
       }

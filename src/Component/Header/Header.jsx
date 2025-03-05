@@ -4,24 +4,26 @@ import "./Header.css";
 import { auth } from "../../Firebase";
 import { useContext, useState } from "react";
 import { Usercontext } from "../../ContextProviders/UserProvider";
-import DarkModeToggle from "../Toggletheme/DarkModeToggle";
 
 
 const Header = () => {
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
+  //Funtion for logout
   const logout = () => {
-    auth.signOut();
+    auth.signOut(); //Using firebase authentication
     navigate(`/login`);
   };
 
+  //Function for search bar 
   const handlesave = (e) => {
     e.preventDefault();
     if (search.trim()) {
-      navigate(`/search?Query=${search}`)
+      navigate(`/search?Query=${search}`) //pass the query in navbar to search page for showcase data
     }
   }
 
+  //Control the value of search bar
   const changehandler = (e) => {
     const value = e.target.value;
     setSearch(value);
@@ -33,6 +35,7 @@ const Header = () => {
     }, 600)
   }
 
+  //get the context value
   const user = useContext(Usercontext);
 
 
@@ -58,6 +61,11 @@ const Header = () => {
             <Link to="/home" className="nav-link" title="Go To Home">
               <li className="nav-item active">Home</li>
             </Link>
+            {user.currentuserfulldetail?.role == "user" && (
+              <Link to="/profile" className="nav-link" title="See Your Order">
+                <li className="nav-item">My Profile</li>
+              </Link>
+            )}
             <Link to="/about" className="nav-link" title="Know Us">
               <li className="nav-item">About Us</li>
             </Link>
@@ -96,7 +104,6 @@ const Header = () => {
             <form className="form-inline my-2 my-lg-0 searchform" onSubmit={handlesave}>
               <input className="form-control mr-sm-2 searchbox" type="search" placeholder="Search" aria-label="Search" name="search" value={search} onChange={e => changehandler(e)} />
               <button className="btn btn-outline-success my-2 my-sm-0 searchbutton" type="submit">Search</button>
-              <DarkModeToggle/>
             </form>
             
           </div>

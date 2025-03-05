@@ -19,44 +19,46 @@ const User = () => {
         address: "",
         mobileno: "",
     });
-    const [visible, setVisible] = useState({
-        showuser: true,
-        adduser: false,
-    });
+    const [visible, setVisible] = useState(false);
     const [error, setError] = useState('')
     const navigate = useNavigate();
     const user = useContext(Usercontext)
 
     let filtereduser = []
 
+    //check for the all users except the current user
     filtereduser = user.allusers?.filter((auser) => auser.email !== user.cuser.email)
 
+    //delete the user
     const deleteUser = async (delete1) => {
         await deleteDoc(doc(database, "Users", delete1.id));
     };
 
 
+    //handle change on adding new user
     const handlechange = (item) => {
         const { name, value } = item.target;
     
+        //control the user detail in state
         setRegisteruser((rstat) => ({
           ...rstat,
           [name]: value,
         }));
     
+        //define error for feilds
         setError((preverror) => {
-          let newerror = { ...preverror };
+          let newerror = { ...preverror }; //copy user using spread operator 
     
           if (name === "password") {
     
-            const specialcharactercheck = /[!@#$%&*]/.test(value);
-            const capitalletter = /[A-Z]/.test(value);
-            const letter8 = value.length >= 8;
+            const specialcharactercheck = /[!@#$%&*]/.test(value);//check for the special character
+            const capitalletter = /[A-Z]/.test(value);//check for the capital value
+            const letter8 = value.length >= 8;//check for the length
     
             if (letter8) {
               if (capitalletter) {
-                if (specialcharactercheck) {
-                  delete newerror.password;
+                if (specialcharactercheck) { 
+                  delete newerror.password; //delete if all condition satisfied
                 } else {
                   newerror.password = "* Password must be contain a special character.";
                 }
@@ -68,29 +70,31 @@ const User = () => {
               newerror.password = "* Password should be 8 charcters or above";
             }
           }
-          else if (name == "mobileno") {
-            let checklength = value.length >= 10;
+          else if (name == "mobileno") { //set for mobile number
+            let checklength = value.length >= 10; //check length
     
-            if (checklength) delete newerror.mobileno;
+            if (checklength) delete newerror.mobileno; //delete if error resolved
             else newerror.mobileno = "* Mobile number should be equal to 10 characters";
           } else {
             if (value.trim() !== " ") {
-              delete newerror[name];
+              delete newerror[name]; //delete for all error
             }
           }
           return newerror;
         })
       };
-
-
+  
+    //add user to database
     const savetodatabase = async (e) => {
-        e.preventDefault();
+        e.preventDefault();//prevent submission
 
         try {
-
+            //verify email 
             const emailverify = user.allusers?.every(
                 (itm) => itm.email !== registeruser.email
             );
+            if(!emailverify) return alert("Email Already Exists! Please Use Different Email");
+
                 toast.success('✅ User Added Succesfully!', {
                             position: "top-right",
                             autoClose: 2000,
@@ -101,7 +105,8 @@ const User = () => {
                             progress: undefined,
                             theme: "light",
                             });
-            if (emailverify) {
+            
+                //create user in firebase authentication
                 const userdetail = await createUserWithEmailAndPassword(
                     auth,
                     registeruser.email,
@@ -114,12 +119,14 @@ const User = () => {
                 };
 
                 if (userdetail) {
+                    //Added to firestore
                     await setDoc(
                         doc(database, "Users", userdetail.user.uid),
                         newuser1
                     )
-                    await auth.signOut();
+                    await auth.signOut(); //Signout
 
+                    //Again sign in
                     await signInWithEmailAndPassword(auth,
                         user.cuser.email,
                         user.currentuserfulldetail.password
@@ -135,15 +142,9 @@ const User = () => {
                     address: "",
                     mobileno: "",
                 });
-            } else {
-                alert("Email Already Exists! Please Use Different Email");
-            }
-
-            setVisible((e) => ({
-                ...e,
-                showuser: !e.showuser,
-                adduser: !e.adduser,
-            }));
+           
+            
+            setVisible(false);
             alert("User Added")
         } catch (error) {
             console.error("Error in storing user", error);
@@ -151,10 +152,7 @@ const User = () => {
     };
 
     const Addnewuser = () => {
-        setVisible((e) => ({
-            ...e,
-            adduser: true,
-        }));
+        setVisible(true);
     };
 
     return (
@@ -166,7 +164,6 @@ const User = () => {
             </HelmetProvider>
             <div className="alluser">
                 <Header />
-                {visible.showuser &&
                     <div className="usertable">
                         <table>
                             <thead>
@@ -205,9 +202,9 @@ const User = () => {
                         </table>
                     </div>
 
-                }
+                
 
-                <Modal show={visible.adduser} size="lg" onHide={() => setVisible((prev) => ({ ...prev, adduser: false }))}>
+                <Modal show={visible} size="lg" onHide={() => setVisible(false)}>
                     <Modal.Header closeButton>
                         <Modal.Title>Add New User</Modal.Title>
                     </Modal.Header>

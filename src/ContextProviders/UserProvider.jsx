@@ -16,11 +16,12 @@ const UserProvider = ({children}) => {
     useEffect(() => {
         try { 
             setLoading(true)
+            //Get the current user using firebase authentication
             const usr = auth.onAuthStateChanged((user) => {                                
                 setCuser(user);
             });
                 
-            return () => usr();
+            return () => usr(); //Clear the value
         } catch (error) {
             console.error("Error in getting current userr", error);
 
@@ -33,7 +34,7 @@ const UserProvider = ({children}) => {
     useEffect(() => {
         try {
             setLoading(true);
-    
+            //Get the All  users 
             const usr = onSnapshot(collection(database, "Users"), (item) => {
                 const user = item.docs?.map((doc1) => ({
                     id: doc1.id,
@@ -55,6 +56,7 @@ const UserProvider = ({children}) => {
         try {          
             if (cuser) {
                 if (allusers) {
+                    //Get full detail of current user
                     const fulldetail = allusers?.find((abc) => abc.email === cuser.email);
                     setCurrentuserfulldetail(fulldetail)
                 }
@@ -63,7 +65,7 @@ const UserProvider = ({children}) => {
             console.error("Error in getting full detail of current user", error);
 
         };
-    },[cuser,allusers])
+    },[cuser,allusers])//run after getting current user and all users
 
     return (
         <>

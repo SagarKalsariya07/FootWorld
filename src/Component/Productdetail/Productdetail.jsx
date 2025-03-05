@@ -23,18 +23,19 @@ import { Usercontext } from "../../ContextProviders/UserProvider";
 const Productdetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [filteredproduct,setFilteredproduct] = useState();
+
+  //Get the ID from the URL using useparams
   const { id } = useParams();
+
   const navigate = useNavigate();
 
+  //Context Value
   const cart1 = useContext(Cartcontext);
-
   const user1 = useContext(Usercontext);
 
   useEffect(()=>{
-    
         try{
-
-            
+          //Get the Product detail Using the id we are getting from URL
             const q = query(collection(database,"Products"),where(documentId(),"==",id));
             const prd = onSnapshot(q,(items)=>{
               const product = items.docs?.map((doc1)=>({
@@ -52,12 +53,14 @@ const Productdetail = () => {
   
   },[])
 
+  //Increment quantity
   const increment = () => {
     const newquantity = quantity + 1 || 1;
 
     setQuantity(newquantity);
   };
 
+  //Decrement Quantity
   const decrement = () => {
     const newquantity = quantity - 1 || 1;
     if (newquantity > 0) {
@@ -65,23 +68,27 @@ const Productdetail = () => {
     }
   };
 
+  // Add to cart
   const addtocart = async (cart) => {
 
-    if (cart1.cartitem.length > 0) {
-      const sameitem = cart1.cartitem?.find((abc) => abc.productid == cart.id);
+    if (cart1.cartitem.length > 0) {//check the cart
+
+      const sameitem = cart1.cartitem?.find((abc) => abc.productid == cart.id);//find if same product is sended to cart
 
       if (sameitem) {
         const updatecart = cart1.cartitem?.map((xyz) =>
           xyz.productid == cart.id
             ? { ...xyz, quantity: (xyz.quantity = quantity) }
             : xyz
-        );
+        );//if same product is sended than only quantity shoul be upadated
 
         await updateDoc(doc(database, "Cart", user1.cuser.uid), {
           items: updatecart,
         });
         navigate(`/cart`);
-      } else {
+      } 
+      //Add product if different product is added
+      else {
         await updateDoc(doc(database, "Cart", user1.cuser.uid), {
           items: arrayUnion({
             productid: cart.id,
@@ -92,7 +99,9 @@ const Productdetail = () => {
         });
         navigate(`/cart`);
       }
-    } else {
+    } 
+    //Add the firt product
+    else {
       await setDoc(doc(database, "Cart", user1.cuser.uid), {
         items: [
           {
@@ -107,8 +116,8 @@ const Productdetail = () => {
     }
   };
 
-  const edit = () => {
-    navigate(`/addproducts`);
+  const edit = (data) => {
+    navigate(`/addproducts`,{ state : { productfulldetail:data }});
   };
 
   return (

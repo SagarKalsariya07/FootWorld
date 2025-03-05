@@ -11,33 +11,28 @@ const Cartprovider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [cartitem, setCartitem] = useState([]);
 
-
     const user = useContext(Usercontext);
-    useEffect(() => {
 
+    useEffect(() => {
         try {
-            if (user?.cuser) {
+            if (user?.cuser)//check for login of user
+             {               
                 setLoading(true)
+                //get cart details of current user
                 const crt = onSnapshot(doc(database, "Cart", user.cuser?.uid), (userdata) => {
                     if (userdata.exists()) {
-                        const cart1 = userdata?.data()?.items;
+                        const cart1 = userdata?.data()?.items;                        
                         setCartitem(cart1);
                     }
                 });
 
                 return () => crt();
             }
-
-
-
-
         } catch (error) {
             console.error("Error in getting cart details", error)
         } finally {
             setLoading(false)
         };
-
-
     }, [user])
 
 
@@ -48,6 +43,7 @@ const Cartprovider = ({ children }) => {
                     <ClipLoader size={50} color={"black"} loading={loading} />
                 </div>
             ) : (
+                // Give cart items to context
                 <Cartcontext.Provider value={{ cartitem, setCartitem }}>
                     {children}
                 </Cartcontext.Provider>
