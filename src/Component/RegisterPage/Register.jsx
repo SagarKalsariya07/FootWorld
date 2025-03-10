@@ -26,7 +26,7 @@ const Register = () => {
   //Handled change on form
   const handlechange = (item) => {
     const { name, value } = item.target;
-    
+
     //Control the input
     setRegisteruser((rstat) => ({
       ...rstat,
@@ -84,18 +84,8 @@ const Register = () => {
       );
 
       if (!emailverify) return alert("Email Already Exists! Please Use Different Email");
-      //Toast message
-      toast.success('✅ Registered succesfully!', {
-                  position: "top-right",
-                  autoClose: 2000,
-                  hideProgressBar: false,
-                  closeOnClick: false,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                  });
-       //Added user in firebase Authentication           
+
+      //Added user in firebase Authentication           
       const userdetail = await createUserWithEmailAndPassword(
         auth,
         registeruser.email,
@@ -107,6 +97,16 @@ const Register = () => {
       };
 
       if (userdetail) {
+        //Toast message after succesful registration
+        toast.success('✅ Registered succesfully!', {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+        });
         //Add user in firestore
         await setDoc(
           doc(database, "Users", userdetail.user.uid),
@@ -126,6 +126,15 @@ const Register = () => {
         mobileno: "",
       });
     } catch (error) {
+      toast.error('❌ Error in registering user!', {
+        position: "top-left",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
       console.error("Error in storing user", error);
     }
   };

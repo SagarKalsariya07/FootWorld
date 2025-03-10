@@ -38,30 +38,38 @@ const Login = () => {
   const logintosite = async (e) => {
     if (user1) {
       e.preventDefault();
-          //check password
-          const passwordverify = user1.allusers?.find((itm) => itm.email == loginuser.email && itm.password == loginuser.password)
-          toast.success('✅ Logged in succesfully!', {
-            position: "top-right",
-            autoClose: 1000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-            });
-          if (passwordverify) {
-            //log in site using firbase authentication
-            await signInWithEmailAndPassword(
-              auth,
-              loginuser.email,
-              loginuser.password
-            );
-            navigate(`/home`);
-          } else {
-            alert("User Not Found!!Check Your Password Or Check your Email Or Register Yourself");
-          }
-       
+      //check password
+      const passwordverify = user1.allusers?.find((itm) => itm.email == loginuser.email && itm.password == loginuser.password)
+
+      if (passwordverify) {
+        toast.success('✅ Logged in succesfully!', {
+          position: "top-left", 
+          autoClose: 1000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        //log in site using firbase authentication
+        await signInWithEmailAndPassword(
+          auth,
+          loginuser.email,
+          loginuser.password
+        );
+        navigate(`/home`);
+      } else {
+        toast.error('❌ Error in login!', {
+          position: "top-left",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "dark",
+          });
+      }
+
     }
   };
 
@@ -102,7 +110,7 @@ const Login = () => {
       </HelmetProvider>
       <div className="main1">
         <div className="regform1">
-          <form className="loginform"  onSubmit={logintosite}>
+          <form className="loginform" onSubmit={logintosite}>
             <div className="form-group gap">
               <label htmlFor="exampleInputEmail1">Email address</label>
               <input

@@ -54,18 +54,16 @@ const Header = () => {
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span className="navbar-toggler-icon"></span>
+          <span className="navbar-toggler-icon" ></span>
         </button>
         <div className=" navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ulweight">
             <Link to="/home" className="nav-link" title="Go To Home">
               <li className="nav-item active">Home</li>
             </Link>
-            {user.currentuserfulldetail?.role == "user" && (
-              <Link to="/profile" className="nav-link" title="See Your Order">
+            <Link to="/profile" className="nav-link" title="See Your Order">
                 <li className="nav-item">My Profile</li>
-              </Link>
-            )}
+            </Link>
             <Link to="/about" className="nav-link" title="Know Us">
               <li className="nav-item">About Us</li>
             </Link>
