@@ -1,36 +1,33 @@
 import { useEffect, useState } from "react"
 import { auth, database } from "../Firebase";
-import { collection,  onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { ClipLoader } from "react-spinners";
 import PropTypes from "prop-types";
 import { createContext } from "react";
 
 export const Usercontext = createContext();
 
-const UserProvider = ({children}) => {
+const UserProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [cuser, setCuser] = useState(null);
     const [allusers, setAllusers] = useState([]);
     const [currentuserfulldetail, setCurrentuserfulldetail] = useState();
 
     useEffect(() => {
-        try { 
-            setLoading(true)
-            //Get the current user using firebase authentication
-            const usr = auth.onAuthStateChanged((user) => {                                
-                setCuser(user);
-            });
-                
-            return () => usr(); //Clear the value
-        } catch (error) {
-            console.error("Error in getting current userr", error);
+        setLoading(true);
 
-        } finally {
-            setLoading(false)
-        }
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            setCuser(user); // Set the current user
+            setLoading(false); // Set loading false AFTER Firebase gives the result
+        }, (error) => {
+            console.error("Error in getting current user", error);
+            setLoading(false); // Set loading false in case of error
+        });
 
+        // Cleanup function
+        return unsubscribe;
     }, []);
-
+    
     useEffect(() => {
         try {
             setLoading(true);
@@ -42,7 +39,7 @@ const UserProvider = ({children}) => {
                 }));
                 setAllusers(user);
             });
-    
+
             return () => usr();
         } catch (error) {
             console.error("Error in getting users details", error);
@@ -50,10 +47,10 @@ const UserProvider = ({children}) => {
             setLoading(false);
         }
     }, []);
-    
 
-    useEffect(()=>{
-        try {          
+
+    useEffect(() => {
+        try {
             if (cuser) {
                 if (allusers) {
                     //Get full detail of current user
@@ -65,7 +62,7 @@ const UserProvider = ({children}) => {
             console.error("Error in getting full detail of current user", error);
 
         };
-    },[cuser,allusers])//run after getting current user and all users
+    }, [cuser, allusers])//run after getting current user and all users
 
     return (
         <>
@@ -74,7 +71,7 @@ const UserProvider = ({children}) => {
                     <ClipLoader size={50} color={"black"} loading={loading} />
                 </div>
             ) : (
-                <Usercontext.Provider value={{ cuser,allusers, setAllusers,currentuserfulldetail }}>
+                <Usercontext.Provider value={{ cuser, allusers, setAllusers, currentuserfulldetail }}>
                     {children}
                 </Usercontext.Provider>
             )}

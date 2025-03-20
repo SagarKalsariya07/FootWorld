@@ -1,4 +1,4 @@
-import { arrayUnion, collection, deleteDoc, doc, documentId, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { arrayUnion, collection, deleteDoc, doc, documentId, getDocs, onSnapshot, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { database } from "../../Firebase";
 import Header from "../Header/Header";
@@ -10,6 +10,7 @@ import emptyorder from "../Images/emptyorder.png"
 import { Cartcontext } from "../../ContextProviders/Cartprovider";
 import { Usercontext } from "../../ContextProviders/UserProvider";
 import { Modal } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 const Orderhistory = () => {
     const [orderhistory, setOrderhistory] = useState([]);
@@ -27,24 +28,37 @@ const Orderhistory = () => {
 
     //function for getting order detail
     const getOrderDetail = async () => {
-        try {
-            setLoading(true);
-            const userid = user1?.cuser?.uid; // get user id
-            //Using firestore query get the order details
-            const ord = await getDocs(query(collection(database, "Orders"), where("Userid", "==", userid)));
-            const order = ord.docs?.map((item) => ({ id: item.id, ...item.data() }));
-            setOrderhistory(order);//assing it to orderhistory state
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
+        setLoading(true);
+        const userid = user1?.cuser?.uid; // get user id
+
+        if (userid) {
+            // Create query
+            const q = query(collection(database, "Orders"), where("Userid", "==", userid));
+
+            // Real-time listener
+            const unsubscribe = onSnapshot(q, (snapshot) => {
+                const order = snapshot.docs.map((item) => ({
+                    id: item.id,
+                    ...item.data(),
+                }));
+                setOrderhistory(order); // update orderhistory state
+                setLoading(false); // loading done
+            }, (error) => {
+                console.error("Error fetching orders: ", error);
+                setLoading(false); // still stop loading in case of error
+            });
+
+            // Clean up listener when component unmounts or userid changes
+            return () => unsubscribe();
+        } else {
+            setLoading(false); // No user, stop loading
         }
     };
 
     //calling getuserdetail function in rendering
     useEffect(() => {
-       getOrderDetail();
-    }, []);
+        getOrderDetail();
+    }, [user1]);
 
     //Function for getting more product detail
     const moreinfo = async (order1) => {
@@ -95,8 +109,17 @@ const Orderhistory = () => {
                 await updateDoc(docref, {
                     items: updatecart,
                 })
-                alert(`${buyproduct.productname} added to cart`)
-            } 
+                toast.success(`${buyproduct.productname} added to cart`, {
+                    position: "top-left", 
+                    autoClose: 1000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                  });
+                
+            }
             //Add entire new product with older products stays there
             else {
                 await updateDoc(docref, {
@@ -107,9 +130,18 @@ const Orderhistory = () => {
                         buyedAt: new Date(),
                     })
                 });
-                alert(`${buyproduct.productname} added to cart`)
+                toast.success(`${buyproduct.productname} added to cart`, {
+                    position: "top-left", 
+                    autoClose: 1000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                  });
+               
             }
-        } 
+        }
         //Add first product if no product is there
         else {
             await setDoc(docref, {
@@ -122,15 +154,28 @@ const Orderhistory = () => {
                     }
                 ]
             });
-            alert(`${buyproduct.productname} added to cart`)
+            toast.success(`${buyproduct.productname} added to cart`, {
+                position: "top-left", 
+                autoClose: 1000,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+              });
         }
 
 
     };
- 
+
     //Remove history of the order from orderhistory
     const removefromhistory = async (remove) => {
-        await deleteDoc(doc(database, "Orders", remove.id));
+        try {
+            await deleteDoc(doc(database, "Orders", remove.id));
+        } catch (error) {
+            console.error("Error in deleting history", error);
+        }
+
     }
 
     const shopnow = () => {

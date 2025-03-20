@@ -33,7 +33,7 @@
     box-shadow: 2px 2px 20px 2px;
 }
 .order1 table thead tr th{
-    background-color: rgb(123, 248, 81);
+    background-color: rgb(81, 248, 240);
     text-align: start;
 }
 .productdetail table thead tr th{
@@ -69,9 +69,12 @@
 /* For empty order */
 
 .empty-order-history {
-    text-align: center;
-    margin-top: 50px;
-    height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 8rem;
+    height: auto;
   }
   
   .empty-order-image {
@@ -89,6 +92,7 @@
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.3s ease;
+    width: 25%;
   }
   
   .shop-now-button:hover {

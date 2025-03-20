@@ -14,25 +14,34 @@ const Cartprovider = ({ children }) => {
     const user = useContext(Usercontext);
 
     useEffect(() => {
-        try {
+       
             if (user?.cuser)//check for login of user
-             {               
+            {
                 setLoading(true)
+                const docref =doc(database, "Cart", user.cuser?.uid);
                 //get cart details of current user
-                const crt = onSnapshot(doc(database, "Cart", user.cuser?.uid), (userdata) => {
+                const crt = onSnapshot(docref,
+                 (userdata) => {
                     if (userdata.exists()) {
-                        const cart1 = userdata?.data()?.items;                        
+                        const cart1 = userdata?.data()?.items;
                         setCartitem(cart1);
+                    } else {
+                        // Cart doc deleted, clear the cart items
+                        setCartitem([]);
                     }
-                });
-
-                return () => crt();
+                    setLoading(false)
+                    return () => crt(); //cleanup function
+                },(error)=>{
+                        console.error("Error in getting cart detail",error);
+                        setCartitem([]);
+                        setLoading(false)
+                }
+            );
+            }else{
+                setCartitem([]);
+                setLoading(false)
             }
-        } catch (error) {
-            console.error("Error in getting cart details", error)
-        } finally {
-            setLoading(false)
-        };
+            
     }, [user])
 
 
