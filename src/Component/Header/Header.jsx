@@ -101,7 +101,7 @@ const Header = () => {
           <div className="searchbar">
             <form className="form-inline my-2 my-lg-0 searchform" onSubmit={handlesave}>
               <input className="form-control mr-sm-2 searchbox" type="search" placeholder="Search" aria-label="Search" name="search" value={search} onChange={e => changehandler(e)} />
-              <button className="btn btn-outline-success my-2 my-sm-0 searchbutton" type="submit">Search</button>
+              <button className="btn  my-2 my-sm-0 searchbutton" type="submit">Search</button>
             </form>
             
           </div>

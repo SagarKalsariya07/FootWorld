@@ -141,7 +141,7 @@ const Allproduct = () => {
                     price: cart1.price,
                     quantity: newquantity,
                 };
-                await updateDoc(doc(database, "Cart", user.cuser.uid), {
+                await updateDoc(doc(database, "Cart", user.cuser?.uid), {
                     items: arrayUnion(newproduct),
                 });
                 navigate(`/cart`);
@@ -248,7 +248,7 @@ const Allproduct = () => {
 
                                 {user.currentuserfulldetail?.role == "user" &&
                                     <li
-                                        className="list-group-item addcart"
+                                        className="list-group-item addcart button"
                                         onClick={() => addtocart(item)}
                                         style={{ borderRadius: "0px 0px 15px 15px" }}
                                         role="button"

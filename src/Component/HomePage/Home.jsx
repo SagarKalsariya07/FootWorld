@@ -15,6 +15,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Usercontext } from "../../ContextProviders/UserProvider";
 import { Cartcontext } from "../../ContextProviders/Cartprovider";
 import { Productcontext } from "../../ContextProviders/Productprovider";
+import { toast, ToastContainer } from "react-toastify";
 
 
 const Home = () => {
@@ -51,8 +52,8 @@ const Home = () => {
     }
   };
 
-  
-//add to cart funciton
+
+  //add to cart funciton
   const addtocart = async (event) => {
     const quant = quantity[event.id] || 1;
 
@@ -72,7 +73,15 @@ const Home = () => {
           await updateDoc(doc(database, "Cart", user.cuser.uid), {
             items: updatecart,
           });
-          alert(`${event.productname} added to cart`);
+          toast.success(`${event.productname} added to cart`, {
+            position: "top-left",
+            autoClose: 1000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
           //after submitting value quantity reset to 1
           setQuantity((e) => {
             return {
@@ -80,7 +89,7 @@ const Home = () => {
               [event.id]: 1,
             };
           });
-        } 
+        }
         //if its not same productt than add it to database
         else {
           const newproduct = {
@@ -93,7 +102,15 @@ const Home = () => {
           await updateDoc(doc(database, "Cart", user.cuser.uid), {
             items: arrayUnion(newproduct),
           });
-          alert(`${event.productname} added to cart`);
+          toast.success(`${event.productname} added to cart`, {
+            position: "top-left",
+            autoClose: 1000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
           //Reset quanitty
           setQuantity((e) => {
             return {
@@ -102,7 +119,7 @@ const Home = () => {
             };
           });
         }
-      } 
+      }
       //Addi the first product to cart
       else {
         const firstproduct = {
@@ -114,7 +131,15 @@ const Home = () => {
         await setDoc(doc(database, "Cart", user.cuser.uid), {
           items: [firstproduct],
         });
-        alert(`${event.productname} added to cart`);
+        toast.success(`${event.productname} added to cart`, {
+          position: "top-left",
+          autoClose: 1000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
         //Reset Quantity
         setQuantity((e) => {
           return {
@@ -149,7 +174,7 @@ const Home = () => {
         </Helmet>
       </HelmetProvider>
       <div className="page">
-          <Header />
+        <Header />
 
         <div className="backimage">
           <div className="welcomemessage">
@@ -202,7 +227,7 @@ const Home = () => {
                   {user.currentuserfulldetail?.role == "user" && (
                     <li
                       role="button"
-                      className="list-group-item addcart"
+                      className="list-group-item addcart button"
                       onClick={() => addtocart(item)}
                       style={{ borderRadius: "0px 0px 15px 15px" }}
                     >
@@ -220,7 +245,9 @@ const Home = () => {
             ))}
           </div>
           <Footer />
+          <ToastContainer>
 
+          </ToastContainer>
         </div>
       </div>
 

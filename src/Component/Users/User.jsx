@@ -93,7 +93,18 @@ const User = () => {
             const emailverify = user.allusers?.every(
                 (itm) => itm.email !== registeruser.email
             );
-            if(!emailverify) return alert("Email Already Exists! Please Use Different Email");
+            if (!emailverify){ 
+                toast.error("Email Already Exists! Please Use Different Email", {
+                  position: "top-left", 
+                  autoClose: 1000,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "dark",
+                });
+                return;
+              }
 
                 toast.success('✅ User Added Succesfully!', {
                             position: "top-right",
@@ -145,7 +156,15 @@ const User = () => {
            
             
             setVisible(false);
-            alert("User Added")
+            toast.success("User Added", {
+                position: "top-left", 
+                autoClose: 1000,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+              }); 
         } catch (error) {
             console.error("Error in storing user", error);
         }

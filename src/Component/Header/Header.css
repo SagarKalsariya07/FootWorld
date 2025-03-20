@@ -34,6 +34,11 @@
 }
 
 .searchbutton {
-  background-color: blue;
+  background-color: rgb(40, 40, 255);
+  color: aliceblue;
+}
+
+.searchbutton:hover{
+  background-color: rgb(34, 34, 215);
   color: aliceblue;
 }

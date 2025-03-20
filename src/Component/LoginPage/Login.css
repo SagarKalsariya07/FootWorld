@@ -15,11 +15,14 @@
 }
 .loginform label{
     color: aliceblue;
+    margin-left: 10px;
+    font-size: 15px;
 }
 .loginform div input{
     width: 330px;
     height: 40px;
     background-color: rgba(206, 203, 198, 0.731);
+    border-radius: 10rem;
 } 
 .submitbutton1{
     text-align: center;

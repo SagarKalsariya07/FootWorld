@@ -20,6 +20,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import emptyCartImage from "../Images/cart.png"
 import { Cartcontext } from "../../ContextProviders/Cartprovider";
 import { Usercontext } from "../../ContextProviders/UserProvider";
+import { toast, ToastContainer } from "react-toastify";
 
 
 const Cart = () => {
@@ -36,52 +37,52 @@ const Cart = () => {
     try {
       //Getting cartids of product that are in cart
       const cartids = cart.cartitem?.map((cartid) => cartid.productid) || [];
-  
+
       if (cartids.length === 0) {
         setQueryresult([]); // Reset when no items in cart
         return;
       }
-  
+
       //Creating Parts of cartIds
       const parts = [];
       for (let i = 0; i < cartids.length; i += 10) {
         parts.push(cartids.slice(i, i + 10));
       }
-  
+
       //Getting cartitem detail from product document from firestore
       const filter = parts.map((partone) => {
         const q = query(collection(database, "Products"), where(documentId(), "in", partone)); //create query for getting product detail
-        
+
         //Running query for getting productdetail
         return onSnapshot(q, (pritem) => {
           const productdetail = pritem.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
           }));
-  
+
           setQueryresult([...productdetail]); //  Ensure all products are included in queryresult        
         });
       });
-  
+
       return () => filter.forEach((unsubscribe) => unsubscribe()); //  Proper cleanup after completion of query 
     } catch (error) {
       console.error("Error in getting full cart detail", error);
     }
   }, [cart.cartitem]); //  Depend on `cart.cartitem`, updates when a new product is added
-  
+
   //  Update `cartfulldetail` after `queryresult` is updated
   useEffect(() => {
     if (queryresult.length > 0) {
       const productdata_Withquantity = cart?.cartitem.map((cart) => {
         const productdetail = queryresult.find((pid) => pid.id === cart.productid); //comparing queryresult id with cartitemid for getting cart  quantity from cartitem
-        if(productdetail){
+        if (productdetail) {
           return { ...productdetail, quantity: cart.quantity }; //return quantity if id is found
         }
-      });      
+      });
       setCartfulldetail(productdata_Withquantity); //Giving detail to cartdeatil for showing in ui
     }
   }, [queryresult]); //  Depend on `queryresult`, ensuring it's updated before computing `cartfulldetail`
-  
+
 
   //calculating total price
   useEffect(() => {
@@ -97,10 +98,10 @@ const Cart = () => {
   //Increment function for increasing quantity
   const increment = async (cart1) => {
 
-    const newquantity = cart1.quantity + 1;    
+    const newquantity = cart1.quantity + 1;
     try {
       const updatequantity = cart.cartitem?.map((item) => {
-       return item.productid === cart1.id ? { ...item, quantity: newquantity } :item; //updating quantity after getting desired product id
+        return item.productid === cart1.id ? { ...item, quantity: newquantity } : item; //updating quantity after getting desired product id
       });
 
       //Updating the cart doc with inrcremented quantity
@@ -141,7 +142,15 @@ const Cart = () => {
       await updateDoc(doc(database, "Cart", user.cuser.uid), {
         items: arrayRemove(remove),
       });
-      alert(`${cart1.productname} Removed From Cart`);
+      toast.success(`${cart1.productname} Removed from cart`, {
+        position: "top-left", 
+        autoClose: 1000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     } catch (error) {
       console.error("Error in removing cart", error);
     }
@@ -149,36 +158,49 @@ const Cart = () => {
 
   //Buy Now function
   const buyNow = async () => {
-    const check = cartfulldetail?.every((abc) => abc.quantity <= abc.stock);//check for availability of product through checking stock of an item
-    if (check) {
-      for (const cart1 of cartfulldetail) {
+    try {
+      const check = cartfulldetail?.every((abc) => abc.quantity <= abc.stock);//check for availability of product through checking stock of an item
+      if (check) {
+        for (const cart1 of cartfulldetail) {
 
-        const updatedstock = cart1.stock - cart1.quantity; //Updating the stock
+          const updatedstock = cart1.stock - cart1.quantity; //Updating the stock
 
-        await updateDoc(doc(database, "Products", cart1.id), { //updating cart doc
-          stock: updatedstock
-        });
+          await updateDoc(doc(database, "Products", cart1.id), { //updating cart doc
+            stock: updatedstock
+          });
+          
+          await deleteDoc(doc(database, "Cart", user?.cuser.uid));//updating cart doc
+        };
+        const order =
+        {
+          cartitem: cart.cartitem,
+          totalAmount: totalprice,
+          createdAt: new Date(),
+          orderStatus: "confirmed",
+          Userid: user.cuser.uid,
+        };
+        const order1 = await addDoc(collection(database, "Orders"), order);//Adding Order detail to order document in firestore
+        setTotalprice(0);
+        navigate(`/ordersuccess`, { state: { orderid: order1.id } }); //navigate to order success page
+      } else {
+        const data = cartfulldetail?.filter((item) => item.quantity > item.stock); //Finding the products that are not in stock
 
-        await deleteDoc(doc(database, "Cart", user.cuser.uid));//updating cart doc
-      };
-      const order =
-      {
-        cartitem: cart.cartitem,
-        totalAmount: totalprice,
-        createdAt: new Date(),
-        orderStatus: "confirmed",
-        Userid: user.cuser.uid,
-      };
-      const order1 = await addDoc(collection(database, "Orders"), order);//Adding Order detail to order document in firestore
-      setTotalprice(0);
-      navigate(`/ordersuccess`, { state: { orderid: order1.id } }); //navigate to order success page
-    } else {
-      const data = cartfulldetail?.filter((item) => item.quantity > item.stock); //Finding the products that are not in stock
+        const productdt = data.map((ev) => ev.productname);//creating object of product name with 0 stock
 
-      const productdt = data.map((ev) => ev.productname);//creating object of product name with 0 stock
-
-      alert(`${productdt.join()}'s quantity not available`); //Joing them and displaying through alert
+        toast.success(`${productdt.join()}'s quantity not available`, {
+          position: "top-left", 
+          autoClose: 1000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        }); //Joing them and displaying through Toast
+      }
+    } catch (error) {
+      console.error("Error in Buy Order", error);
     }
+
   };
 
   const shopnow = () => {
@@ -205,7 +227,7 @@ const Cart = () => {
                     Your Cart
                   </th>
                   <th colSpan="2">
-                    Total amount :  <br />  ₹ {totalprice} 
+                    Total amount :  <br />  ₹ {totalprice}
                   </th>
                   <th style={{ width: "120px" }}>
                     <button className="qntbutton1" onClick={addmore}>
@@ -214,7 +236,7 @@ const Cart = () => {
                   </th>
                   <th style={{ width: "120px" }}>
                     <button className="qntbutton1" onClick={buyNow}>
-                      Buy Now  
+                      Buy Now
                     </button>
                   </th>
                 </tr>
@@ -279,6 +301,9 @@ const Cart = () => {
         )}
 
       </div>
+      <ToastContainer>
+        
+      </ToastContainer>
     </>
   );
 };

@@ -13,19 +13,17 @@ import Orderhistory from "./Component/OrderHistory/Orderhistory";
 import Addroduct from "./Component/AddProduct/Addproduct";
 import Search from "./Component/Search/Search";
 import Ordersuccess from "./Component/Ordersuccess/Ordersuccess";
-// import Addtextfeild from "./Component/PracticeTextfeild/AddtextFeild"
 import { Usercontext } from "./ContextProviders/UserProvider";
 import Pracice from "./Component/AddProduct/Pracice";
 import PageNotFound from "./Component/404/PageNotFound";
 import Profile from "./Component/Profile/Profile";
-// import Textarea from "./Component/Textarea"
 
 function App() {
 
 
   const user = useContext(Usercontext);
-  
-  
+
+
   return (
     <Routes>
       {/* Route for the no page found */}
@@ -43,10 +41,11 @@ function App() {
               <Route path="/allproducts" element={<Allproduct />} />
               <Route path="/productdetail/:id" element={<Productdetail />} />
               <Route path="/search" element={<Search />} />
-              <Route path="/addtextfeild" element={<Pracice/>}/>
-              <Route path="/profile" element={<Profile/>}/>
+              <Route path="/addtextfeild" element={<Pracice />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/" element={<Home />} />
               <Route path="*" element={<PageNotFound />} />
-              </>
+            </>
           )
             :
             // A routes for users
@@ -59,7 +58,8 @@ function App() {
               <Route path="/productdetail/:id" element={<Productdetail />} />
               <Route path="/allproducts" element={<Allproduct />} />
               <Route path="/orderhistory" element={<Orderhistory />} />
-              <Route path="/profile" element={<Profile/>}/>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/" element={<Home />} />
               <Route path="*" element={<PageNotFound />} />
             </>
             )}
@@ -67,7 +67,7 @@ function App() {
         </>
       ) : (
         <>
-        {/* A routes for before login */}
+          {/* A routes for before login */}
           <Route path="/" element={<Login />} />
           <Route path="*" element={<Login />} />
           <Route path="/register" element={<Register />} />

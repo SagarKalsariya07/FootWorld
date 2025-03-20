@@ -83,7 +83,18 @@ const Register = () => {
         (itm) => itm.email !== registeruser.email
       );
 
-      if (!emailverify) return alert("Email Already Exists! Please Use Different Email");
+      if (!emailverify){ 
+        toast.error("Email Already Exists! Please Use Different Email", {
+          position: "top-left", 
+          autoClose: 1000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        return;
+      }
 
       //Added user in firebase Authentication           
       const userdetail = await createUserWithEmailAndPassword(

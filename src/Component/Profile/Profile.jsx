@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import Header from "../Header/Header"
-import dummy from "../Images/dummy user.jpeg"
+import dummy from "../Images/dummy_user.jpeg"
 import { Usercontext } from "../../ContextProviders/UserProvider"
 import { useNavigate } from "react-router-dom"
 
