@@ -16,3 +16,20 @@
    background-repeat: no-repeat;
    background-size: cover;
 }
+
+.discount{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fbd7d1ce;
+    width: 80%;
+    margin: auto;
+    height: 40px;
+    position: sticky;
+}
+
+.dis-text{
+    font-weight: bold;
+    font-size: large;
+    font-family: cursive;
+}

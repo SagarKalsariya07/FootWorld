@@ -21,6 +21,7 @@ import emptyCartImage from "../Images/cart.png"
 import { Cartcontext } from "../../ContextProviders/Cartprovider";
 import { Usercontext } from "../../ContextProviders/UserProvider";
 import { toast, ToastContainer } from "react-toastify";
+import Slider_quant from "../Slider-Quantity/Slider_quant";
 
 
 const Cart = () => {
@@ -28,7 +29,7 @@ const Cart = () => {
   const [totalprice, setTotalprice] = useState(0);
   const [cartfulldetail, setCartfulldetail] = useState([]);
   const [queryresult, setQueryresult] = useState([]);
-
+  const [resetCount, setResetCount] = useState(0)
   //Used Context of cart and user
   const cart = useContext(Cartcontext);
   const user = useContext(Usercontext)
@@ -95,44 +96,6 @@ const Cart = () => {
     navigate(`/allproducts`);
   };
 
-  //Increment function for increasing quantity
-  const increment = async (cart1) => {
-
-    const newquantity = cart1.quantity + 1;
-    try {
-      const updatequantity = cart.cartitem?.map((item) => {
-        return item.productid === cart1.id ? { ...item, quantity: newquantity } : item; //updating quantity after getting desired product id
-      });
-
-      //Updating the cart doc with inrcremented quantity
-      await updateDoc(doc(database, "Cart", user.cuser.uid), {
-        items: updatequantity,
-      });
-    } catch (error) {
-      console.error("Error in updating quantity", error);
-    }
-  };
-
-  //Increment function for increasing quantity
-  const decrement = async (cart1) => {
-    const newquantity = cart1.quantity - 1;
-    try {
-
-      if (newquantity > 0) {
-        const updatequantity = cart.cartitem?.map((item) => {
-          return item.productid === cart1.id ? { ...item, quantity: newquantity } : item  //updating quantity after getting desired product id
-        });
-
-        //Updating the cart doc with inrcremented quantity
-        await updateDoc(doc(database, "Cart", user.cuser.uid), {
-          items: updatequantity,
-        });
-      }
-    } catch (error) {
-      console.error("Error in updating quantity", error);
-    }
-  };
-
   //remove product from cart function
   const removeitem = async (cart1) => {
 
@@ -181,6 +144,7 @@ const Cart = () => {
         };
         const order1 = await addDoc(collection(database, "Orders"), order);//Adding Order detail to order document in firestore
         setTotalprice(0);
+        setResetCount((prev)=> prev+1)
         navigate(`/ordersuccess`, { state: { orderid: order1.id } }); //navigate to order success page
       } else {
         const data = cartfulldetail?.filter((item) => item.quantity > item.stock); //Finding the products that are not in stock
@@ -207,7 +171,15 @@ const Cart = () => {
     navigate(`/allproducts`);
   }
 
-
+const handlequantity = async(productid,newQuantity) =>{
+  const updatequantity = cart.cartitem?.map((item) => {
+    return item.productid === productid ? { ...item, quantity: newQuantity } : item  //updating quantity after getting desired product id
+  });
+  //Updating the cart doc with inrcremented quantity
+  await updateDoc(doc(database, "Cart", user.cuser.uid), {
+    items: updatequantity,
+  });
+}
 
   return (
     <>
@@ -256,31 +228,21 @@ const Cart = () => {
                     <td>{itm.description}</td>
                     <td>{itm.category}</td>
                     <td>{itm.price}</td>
-                    <td>
-                      <span>
-                        <button
-                          className="qntbutton1"
-                          onClick={() => decrement(itm)}
-                        >
-                          -
-                        </button>
-                      </span>{" "}
-                      {itm.quantity}{" "}
-                      <span>
-                        <button
-                          className="qntbutton1"
-                          onClick={() => increment(itm)}
-                        >
-                          +
-                        </button>
-                      </span>
+                    <td className="slide">
+                      <Slider_quant 
+                        productid = {itm.id}
+                        onQuantityChange = {handlequantity}
+                        intialquantity = {itm.quantity}
+                        resetTrigger={resetCount}
+                      />
                     </td>
                     <td>
                       <button
-                        className="qntbutton1"
+                        title="Delete from cart" 
+                        className=""
                         onClick={() => removeitem(itm)}
                       >
-                        Remove
+                       <svg className="deletesvg" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#ff0000"><path d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
                       </button>
                     </td>
                   </tr>

@@ -19,9 +19,11 @@
     margin-top: 30px;
     width: 70%;
     height: auto;
-    box-shadow: 2px 2px 20px 4px;
+    transition: box-shadow 1.5s;
 }
-
+.table table:hover{
+    box-shadow: 2px 2px 25px  rgba(34, 0, 255, 0.89);
+}
 .table table thead tr th{
     padding: 15px;
     text-align: start;
@@ -34,16 +36,7 @@
 .table table tbody tr:nth-child(even){
     background-color: rgba(235, 239, 243, 0.397);
 }
-.qntbutton1{
-    background-color: rgba(16, 16, 237, 0.881);
-    color: aliceblue;
-    padding: 7px;
-    border: none;
-    border-radius: 5px;
-}
-.qntbutton1:hover{
-    background-color: rgba(14, 14, 197, 0.881);
-}
+
 .detail{
     width: 50%;
     margin: auto;
@@ -94,3 +87,7 @@
     transition: background-color 0.3s ease;
   }
   
+/* //For Slider */
+.slide{
+    width: 13%;
+}

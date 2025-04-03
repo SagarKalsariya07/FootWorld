@@ -1,0 +1,10 @@
+.slider{
+    appearance: none;
+    background-color: white;
+}
+
+.slider::-webkit-slider-thumb{
+    color: blue;
+    background-color: blue;
+}
+

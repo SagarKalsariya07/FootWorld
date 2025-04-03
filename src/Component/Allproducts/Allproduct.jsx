@@ -15,15 +15,18 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Cartcontext } from "../../ContextProviders/Cartprovider";
 import { Usercontext } from "../../ContextProviders/UserProvider";
 import { Productcontext } from "../../ContextProviders/Productprovider";
+import { toast, ToastContainer } from "react-toastify";
+import Slider_quant from "../Slider-Quantity/Slider_quant";
 
 const Allproduct = () => {
     const [data, setData] = useState({
         products: [],
         filterproduct: [],
     });
-    const [quantity, setQuantity] = useState({});
     const [heading, setHeading] = useState("All Products");
-
+    const [messageIndex, setMessageIndex] = useState(0)
+    const [updatedQuantity, setUpdatedQuantity] = useState({})
+    const [resetCount, setResetCount] = useState(0)
     const navigate = useNavigate();
 
     //Getting Context Value
@@ -32,40 +35,14 @@ const Allproduct = () => {
     const productdetail = useContext(Productcontext)
 
     //Puting data into setdata state on first render or on first time page call
-    useEffect(() => {
+    useEffect(() => {        
         setData(() => ({
-            products: productdetail.products,
-            filterproduct: productdetail.products,
+            products: productdetail?.products,
+            filterproduct: productdetail?.products,
         }));
-    }, []);
+        
+    }, [productdetail]); 
 
-    //Function for incrementing value of clicked product
-    const increment = (id) => {
-        const newquantity = (quantity[id] || 1) + 1; //increment value by 1
-
-        //Updating quantity of specidic product using it's id
-        setQuantity((abc) => {
-            return {
-                ...abc,
-                [id]: newquantity,
-            };
-        });
-    };
-
-    //Function for decrementing value of clicked product
-    const decrement = (id) => {
-        const newquantity = (quantity[id] || 1) - 1;
-        if (newquantity > 0) {
-
-            //Updating quantity of specidic product using it's id
-            setQuantity((abc) => {
-                return {
-                    ...abc,
-                    [id]: newquantity,
-                };
-            });
-        }
-    };
 
     //funtion for gtting all product after filtering
     const allproduct = () => {
@@ -114,7 +91,7 @@ const Allproduct = () => {
 
     //Add to cart function
     const addtocart = async (cart1) => {
-        const newquantity = quantity[cart1.id] || 1; //Get the quantinty of clicked product 
+        const newquantity = updatedQuantity[cart1.id]||1; //Get the quantinty of clicked product 
         
         //Checking if there re any productts present or not in cart
         if (cart.cartitem?.length > 0) {
@@ -131,7 +108,16 @@ const Allproduct = () => {
                 await updateDoc(doc(database, "Cart", user.cuser.uid), {
                     items: updatecart,
                 });
-                navigate(`/cart`);
+                setResetCount((prev)=>prev+1)
+                 toast.success(`${cart1.productname}'s Added To Cart`, {
+                          position: "top-left", 
+                          autoClose: 1000,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "dark",
+                        });
             } 
             // If there are products present in cart and not that user want 
             // right now than add this product in cart 
@@ -144,7 +130,16 @@ const Allproduct = () => {
                 await updateDoc(doc(database, "Cart", user.cuser?.uid), {
                     items: arrayUnion(newproduct),
                 });
-                navigate(`/cart`);
+                setResetCount((prev)=>prev+1)
+                toast.success(`${cart1.productname}'s Added To Cart`, {
+                    position: "top-left", 
+                    autoClose: 1000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                  });
             }
         } 
         //If there are no product in cart than clicked into cart 
@@ -158,7 +153,16 @@ const Allproduct = () => {
                 await setDoc(doc(database, "Cart", user.cuser.uid), {
                     items: [firstproduct]
                 });
-                navigate(`/cart`);
+                setResetCount((prev)=>prev+1)
+                toast.success(`${cart1.productname}'s Added To Cart`, {
+                    position: "top-left", 
+                    autoClose: 1000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                  });
             } catch (error) {
                 console.error(error);
             }
@@ -168,6 +172,26 @@ const Allproduct = () => {
     const editproduct = () => {
         navigate(`/products`)
     }
+    const messages = [
+        "🚀 Get 10% OFF on your first order! Use code: WELCOME10",
+        "🔥 Buy 2, Get 5% OFF | Buy 3, Get 10% OFF!",
+        "⚡ Flash Sale! 20% OFF for the next 24 hours! Use code: FLASH20",
+        "🎁 Free Shipping on orders above $50!"
+      ];
+
+      useEffect(()=>{
+       const interval= setInterval(() => {
+            setMessageIndex((prev)=>(prev+1) % messages.length)
+        }, 3000);
+        return () => clearInterval(interval);
+      },[])
+
+      const handlechangequantity = (productid,newQuantity) =>{
+        setUpdatedQuantity((prev)=>({
+            ...prev,
+            [productid] : newQuantity,
+        }))
+      }
     return (
         <>
             <HelmetProvider>
@@ -177,6 +201,9 @@ const Allproduct = () => {
             </HelmetProvider>
             <div className="allpr">
                 <Header />
+                <div className="discount">
+                    <h1 className="dis-text">{messages[messageIndex]}</h1>
+                </div>
                 <div className="filter my-4">
                     <div className="btn-group" role="group" aria-label="Category Filter">
                         <button
@@ -230,19 +257,7 @@ const Allproduct = () => {
                                 <li className="list-group-item">Stock: {item?.stock}</li>
                                 {user.currentuserfulldetail?.role == "user" &&
                                     <li className="list-group-item quantity">
-                                        <button
-                                            className="qntbutton"
-                                            onClick={() => decrement(item?.id)}
-                                        >
-                                            -
-                                        </button>{" "}
-                                        {quantity[item?.id] || 1}{" "}
-                                        <button
-                                            className="qntbutton"
-                                            onClick={() => increment(item?.id)}
-                                        >
-                                            +
-                                        </button>
+                                       <Slider_quant productid={item.id} onQuantityChange={handlechangequantity} resetTrigger={resetCount}/>
                                     </li>
                                 }
 
@@ -266,11 +281,11 @@ const Allproduct = () => {
                                         Edit
                                     </li>
                                 }
-
                             </ul>
                         </div>
                     ))}
                 </div>
+                <ToastContainer/>
                 <Footer />
 
             </div>

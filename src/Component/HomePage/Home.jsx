@@ -16,11 +16,12 @@ import { Usercontext } from "../../ContextProviders/UserProvider";
 import { Cartcontext } from "../../ContextProviders/Cartprovider";
 import { Productcontext } from "../../ContextProviders/Productprovider";
 import { toast, ToastContainer } from "react-toastify";
+import Slider_quant from "../Slider-Quantity/Slider_quant";
 
 
 const Home = () => {
   const [quantity, setQuantity] = useState({});
-
+  const [resetCount, setResetCount] = useState(0)
   const navigate = useNavigate();
 
   //Get the context values
@@ -28,28 +29,14 @@ const Home = () => {
   const cart = useContext(Cartcontext)
   const product = useContext(Productcontext)
 
-  //Function for incrementing the wuantity value
-  const increment = (id) => {
-    const newquantity = (quantity[id] || 1) + 1;
-    setQuantity((e) => {
-      return {
-        ...e,
-        [id]: newquantity, //set the quantity to desired product
-      };
-    });
-  };
-
-  //Function for decrementing quantity
-  const decrement = (id) => {
-    const newquantity = (quantity[id] || 1) - 1;
-    if (newquantity > 0) { //check for grater than zero
+  const handlequantity = (productid,newquantity) => {
       setQuantity((e) => {
         return {
           ...e,
-          [id]: newquantity, //update quantity 
+          [productid]: newquantity, //update quantity 
         };
       });
-    }
+    
   };
 
 
@@ -73,7 +60,9 @@ const Home = () => {
           await updateDoc(doc(database, "Cart", user.cuser.uid), {
             items: updatecart,
           });
-          toast.success(`${event.productname} added to cart`, {
+          //after submitting value quantity reset to 1
+          setResetCount((prev)=> prev+1)
+          toast.success(`${event.productname} Already Present In Cart`, {
             position: "top-left",
             autoClose: 1000,
             closeOnClick: true,
@@ -82,13 +71,8 @@ const Home = () => {
             progress: undefined,
             theme: "dark",
           });
-          //after submitting value quantity reset to 1
-          setQuantity((e) => {
-            return {
-              ...e,
-              [event.id]: 1,
-            };
-          });
+      
+          
         }
         //if its not same productt than add it to database
         else {
@@ -102,6 +86,7 @@ const Home = () => {
           await updateDoc(doc(database, "Cart", user.cuser.uid), {
             items: arrayUnion(newproduct),
           });
+          setResetCount((prev)=> prev+1)
           toast.success(`${event.productname} added to cart`, {
             position: "top-left",
             autoClose: 1000,
@@ -112,12 +97,7 @@ const Home = () => {
             theme: "dark",
           });
           //Reset quanitty
-          setQuantity((e) => {
-            return {
-              ...e,
-              [event.id]: 1,
-            };
-          });
+          
         }
       }
       //Addi the first product to cart
@@ -131,6 +111,7 @@ const Home = () => {
         await setDoc(doc(database, "Cart", user.cuser.uid), {
           items: [firstproduct],
         });
+        setResetCount((prev)=> prev+1)
         toast.success(`${event.productname} added to cart`, {
           position: "top-left",
           autoClose: 1000,
@@ -141,12 +122,7 @@ const Home = () => {
           theme: "dark",
         });
         //Reset Quantity
-        setQuantity((e) => {
-          return {
-            ...e,
-            [event.id]: 1,
-          };
-        });
+        
       }
     } catch (error) {
       console.error("Error in adding cart", error);
@@ -158,7 +134,7 @@ const Home = () => {
     navigate(`/addproducts`, { state: { productfulldetail: productdata } });
   };
 
-  //navigate to specifci product productdetal
+  //navigate to specific product productdetal
   const productdetail = (id) => {
     navigate(`/productdetail/${id}`);
   };
@@ -209,19 +185,7 @@ const Home = () => {
                   <li className="list-group-item">Stock: {item.stock}</li>
                   {user.currentuserfulldetail?.role == "user" && (
                     <li className="list-group-item quantity">
-                      <button
-                        className="qntbutton"
-                        onClick={() => decrement(item.id)}
-                      >
-                        -
-                      </button>{" "}
-                      {quantity[item.id] || 1}{" "}
-                      <button
-                        className="qntbutton"
-                        onClick={() => increment(item.id)}
-                      >
-                        +
-                      </button>
+                      <Slider_quant productid={item.id} onQuantityChange={handlequantity} resetTrigger={resetCount}/>
                     </li>
                   )}
                   {user.currentuserfulldetail?.role == "user" && (
@@ -235,8 +199,7 @@ const Home = () => {
                     </li>
                   )}
                   {user.currentuserfulldetail?.role == "admin" && (
-
-                    <li className="list-group-item addcart" onClick={() => editproduct(item)} style={{ borderRadius: "0px 0px 15px 15px" }} role="button">
+                    <li className="list-group-item addcart button" onClick={() => editproduct(item)} style={{ borderRadius: "0px 0px 15px 15px" }} role="button">
                       Edit
                     </li>
                   )}
