@@ -43,7 +43,7 @@ const Login = () => {
 
       if (passwordverify) {
         toast.success('✅ Logged in succesfully!', {
-          position: "top-left", 
+          position: "top-left",
           autoClose: 1000,
           closeOnClick: true,
           pauseOnHover: true,
@@ -67,7 +67,7 @@ const Login = () => {
           pauseOnHover: true,
           draggable: true,
           theme: "dark",
-          });
+        });
       }
 
     }
@@ -110,7 +110,7 @@ const Login = () => {
       </HelmetProvider>
       <div className="main1">
         <div className="regform1">
-          <form className="loginform" onSubmit={logintosite}>
+          <form className="loginform" onSubmit={logintosite} >
             <div className="form-group gap">
               <label htmlFor="exampleInputEmail1">Email address</label>
               <input

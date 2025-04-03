@@ -20,11 +20,10 @@ th {
 .usertable table {
   align-items: center;
   background-color: rgb(240, 248, 255);
-  box-shadow: 3px 5px 15px 2px;
-  transition: transform 0.5s ease;
+  transition: box-shadow 1.5s;
 }
 .usertable table:hover {
-  transform: scale(1.005);
+  box-shadow: 2px 2px 20px rgb(36, 235, 169);
 }
 .usertable table thead {
   background-color: rgb(36, 235, 169);

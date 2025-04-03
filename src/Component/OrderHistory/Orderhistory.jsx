@@ -110,15 +110,15 @@ const Orderhistory = () => {
                     items: updatecart,
                 })
                 toast.success(`${buyproduct.productname} added to cart`, {
-                    position: "top-left", 
+                    position: "top-left",
                     autoClose: 1000,
                     closeOnClick: true,
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
                     theme: "dark",
-                  });
-                
+                });
+
             }
             //Add entire new product with older products stays there
             else {
@@ -131,15 +131,15 @@ const Orderhistory = () => {
                     })
                 });
                 toast.success(`${buyproduct.productname} added to cart`, {
-                    position: "top-left", 
+                    position: "top-left",
                     autoClose: 1000,
                     closeOnClick: true,
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
                     theme: "dark",
-                  });
-               
+                });
+
             }
         }
         //Add first product if no product is there
@@ -155,17 +155,15 @@ const Orderhistory = () => {
                 ]
             });
             toast.success(`${buyproduct.productname} added to cart`, {
-                position: "top-left", 
+                position: "top-left",
                 autoClose: 1000,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
                 theme: "dark",
-              });
+            });
         }
-
-
     };
 
     //Remove history of the order from orderhistory
@@ -229,8 +227,8 @@ const Orderhistory = () => {
                                                 </span>
                                             </td>
                                             <td>
-                                                <button className="qntbutton" onClick={() => removefromhistory(item)}>
-                                                    Remove from History
+                                                <button title="Delete from history" className="" onClick={() => removefromhistory(item)}>
+                                                    <svg className="deletesvg" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#ff0000"><path d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
                                                 </button>
                                             </td>
                                         </tr>
@@ -262,9 +260,6 @@ const Orderhistory = () => {
                         <div className="productdetail">
                             <table>
                                 <thead>
-                                    {/* <tr>
-                                        <th colSpan="6" className="yorder">ProductDetails</th>
-                                    </tr> */}
                                     <tr>
                                         <th>Productname</th>
                                         <th>Price</th>
@@ -285,20 +280,13 @@ const Orderhistory = () => {
                                             <td>{product.category}</td>
                                             <td><button className="qntbutton" onClick={() => rebuyproduct(product)}>Re-Buy</button> </td>
                                         </tr>
-
                                     ))}
                                 </tbody>
                             </table>
                         </div>
                     </Modal.Body>
                 </Modal>
-
-
             </div>
-
-
-
-
         </>
     );
 };

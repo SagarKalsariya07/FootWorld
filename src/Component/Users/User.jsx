@@ -210,7 +210,7 @@ const User = () => {
                                         <td>{itm.role}</td>
                                         <td>{itm.mobileno}</td>
                                         <td>
-                                            <button className="qntbutton deletebutton" onClick={() => deleteUser(itm)}>
+                                            <button className="qntbutton2 deletebutton" onClick={() => deleteUser(itm)}>
                                                 Delete
                                             </button>
                                         </td>
