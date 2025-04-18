@@ -12,7 +12,7 @@ createRoot(document.getElementById('root')).render(
     <UserProvider>
       <Cartprovider>
         <Productprovider>
-          <BrowserRouter basename='/react-ecomerece'>
+          <BrowserRouter basename="/react-ecomerece">
             <App />
           </BrowserRouter>
         </Productprovider>
