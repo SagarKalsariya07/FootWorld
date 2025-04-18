@@ -238,7 +238,7 @@ const handlequantity = async(productid,newQuantity) =>{
                     </td>
                     <td>
                       <button
-                        title="Delete from cart" 
+                        title="Remove from cart" 
                         className=""
                         onClick={() => removeitem(itm)}
                       >
