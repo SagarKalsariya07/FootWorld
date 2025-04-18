@@ -14,7 +14,6 @@ import Addroduct from "./Component/AddProduct/Addproduct";
 import Search from "./Component/Search/Search";
 import Ordersuccess from "./Component/Ordersuccess/Ordersuccess";
 import { Usercontext } from "./ContextProviders/UserProvider";
-import Pracice from "./Component/AddProduct/Pracice";
 import PageNotFound from "./Component/404/PageNotFound";
 import Profile from "./Component/Profile/Profile";
 
@@ -41,7 +40,6 @@ function App() {
               <Route path="/allproducts" element={<Allproduct />} />
               <Route path="/productdetail/:id" element={<Productdetail />} />
               <Route path="/search" element={<Search />} />
-              <Route path="/addtextfeild" element={<Pracice />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/" element={<Home />} />
               <Route path="*" element={<PageNotFound />} />

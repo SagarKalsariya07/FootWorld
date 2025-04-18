@@ -59,10 +59,14 @@ const Header = () => {
         <div className=" navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ulweight">
             <Link to="/home" className="nav-link" title="Go To Home">
-              <li className="nav-item active">Home</li>
+              <li className="nav-item active">
+                <svg xmlns="http://www.w3.org/2000/svg" height="27px" viewBox="0 -960 960 960" width="27px" fill="#000"><path d="M160-120v-480l320-240 320 240v480H560v-280H400v280H160Z" /></svg>
+              </li>
             </Link>
-            <Link to="/profile" className="nav-link" title="See Your Order">
-                <li className="nav-item">My Profile</li>
+            <Link to="/profile" className="nav-link" title="Go To Profile">
+              <li className="nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" height="27px" viewBox="0 -960 960 960" width="27px" fill="#01"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z" /></svg>
+              </li>
             </Link>
             <Link to="/about" className="nav-link" title="Know Us">
               <li className="nav-item">About Us</li>
@@ -103,11 +107,11 @@ const Header = () => {
               <input className="form-control mr-sm-2 searchbox" type="search" placeholder="Search" aria-label="Search" name="search" value={search} onChange={e => changehandler(e)} />
               <button className="btn  my-2 my-sm-0 searchbutton" type="submit">Search</button>
             </form>
-            
+
           </div>
         </div>
       </nav>
-      
+
     </>
   );
 };

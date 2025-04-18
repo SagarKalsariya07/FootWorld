@@ -170,13 +170,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* .cdbody h5{
-  font-size: clamp(14px, 2vw, 18px);
-}
-.cdbody p{
-  font-size: clamp(12px, 1.5vw, 16px);
-  line-height: 1.2;
-} */
+
 .list-group {
   margin-top: auto; 
 }

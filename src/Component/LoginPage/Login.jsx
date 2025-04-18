@@ -59,7 +59,7 @@ const Login = () => {
         );
         navigate(`/home`);
       } else {
-        toast.error('❌ Error in login!', {
+        toast.error('❌ Incorrect Password or Email!', {
           position: "top-left",
           autoClose: 2000,
           hideProgressBar: false,
